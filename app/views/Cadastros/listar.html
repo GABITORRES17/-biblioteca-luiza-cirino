@@ -1,0 +1,62 @@
+#{extends 'main.html' /}
+
+#{set title:'Listagem de Alunos' /}
+
+<!-- 
+    BARRA DE BUSCA 
+    Isso une visualmente o campo de texto e o botão de busca
+-->
+<form action="@{Cadastros.listar}" class="mb-3">
+	<div class="input-group">
+		<span class="input-group-text"><i class="fas fa-search"></i></span>
+		<input type="text" name="t" value="${t}" class="form-control" placeholder="Informe o nome ou a turma do aluno" />
+		<button type="submit" class="btn btn-primary">Buscar</button>
+	</div>
+</form>
+
+<!-- Botão "Novo Aluno" com ícone, alinhado à direita -->
+<div class="d-flex justify-content-end mb-3">
+	<a href="@{Cadastros.formCadastro}" class="btn btn-success">
+		<i class="fas fa-plus me-1"></i> Novo(a) Aluno(a)
+	</a>
+</div>
+
+<!-- Mensagem de erro usando o componente "alert" do Bootstrap em vez de texto vermelho cru -->
+#{if flash.error}
+	<div class="alert alert-danger" role="alert">
+		<i class="fas fa-exclamation-circle me-2"></i> ${flash.error}
+	</div>
+#{/if}
+
+<!-- 
+    LISTA DE ALUNOS - Cada livro agora é exibido em um "card" do Bootstrap,
+    em vez de parágrafos soltos. Isso deixa a leitura mais organizada.
+-->
+#{list items:cadastros, as:'c'}
+
+	<div class="card card-shadow book-card border-start border-primary border-3 mb-3">
+		<div class="card-body">
+			<div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+				<div>
+					<h5 class="card-title mb-1">${c.nome}</h5>
+					<h6 class="card-subtitle text-muted mb-2">${c.senha}</h6>
+					<h6 class="card-subtitle text-muted mb-2">${c.turma?.turma}</h6>
+				</div>
+</br>
+				<form action="@{Cadastros.remover(c.id)}" method="post" class="d-inline">
+				   <button type="submit" class="btn btn-outline-danger btn-sm">
+				   		<i class="fas fa-trash me-1"></i> Remover
+				   </button>
+				</form>
+
+		</div>
+	</div>
+</div>
+
+#{/list}
+#{else}
+	<!-- Estado vazio (nenhum aluno cadastrado) usando um "alert" informativo -->
+	<div class="alert alert-info text-center" role="alert">
+		<i class="fas fa-info-circle me-2"></i> Nenhum aluno cadastrado.
+	</div>
+#{/else}

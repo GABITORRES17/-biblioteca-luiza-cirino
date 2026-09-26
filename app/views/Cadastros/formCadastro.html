@@ -1,0 +1,40 @@
+#{extends 'main.html' /}
+#{set title:'Cadastro de Alunos' /}
+
+<form action="@{Cadastros.salvar}" method="post" class="card card-shadow p-4">
+
+	<input type="hidden" name="cadastro.id" value="${c.id}" />
+
+	<div class="mb-3">
+		<label class="form-label">Nome de Usuário</label>
+		<input type="text" name="cadastro.nome" value="${c.nome}" class="form-control" placeholder="Nome de Usuário" />
+	</div>
+
+	<div class="mb-3">
+		<label class="form-label">Senha</label>
+		<input type="text" name="cadastro.senha" value="${c.senha}" class="form-control" placeholder="Senha" />
+	</div>
+	
+	<div class="mb-4">
+		<label class="form-label">Turma</label>
+		<select name="cadastro.turma.id" class="form-select">
+		#{list items:turmas, as:'t'}
+			<option value="${t.id}" ${t.id == c.turma?.id ? 'selected' : ''}>
+			${t.turma}
+			</option>
+		#{/list}
+		</select>
+	</div>
+
+	<div>
+		<button type="submit" class="btn btn-success">
+			<i class="fas fa-save me-1"></i> Cadastrar
+		</button>
+	</div>
+</form>
+
+<div class="mt-3">
+	<a href="@{Logins.form}" class="btn btn-outline-primary">
+		<i class="fas fa-arrow-left me-1"></i> Retornar
+	</a>
+</div>
