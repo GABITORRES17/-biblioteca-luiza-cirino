@@ -2,6 +2,7 @@ package Job;
 
 import models.Cadastro;
 import models.Genero;
+import models.Perfil;
 import models.Turma;
 import play.jobs.Job;
 import play.jobs.OnApplicationStart;
@@ -74,12 +75,18 @@ public class Inicializador extends Job {
 			t9.save();
 			
 		}
-            
+       
             if (Cadastro.count() == 0) {
-                Cadastro c = new Cadastro();
-                c.nome = "gabi";
-                c.senha = "1234";
-                c.save();
+                Cadastro gabi = new Cadastro();
+                gabi.nome = "gabi";
+                gabi.senha = "1234";
+                gabi.save();
+
+                Cadastro bibliotecaria = new Cadastro();
+                bibliotecaria.nome = "BIBLIO";
+                bibliotecaria.senha = "1234";
+                bibliotecaria.perfil = Perfil.BIBLIOTECARIO;
+                bibliotecaria.save();
             }
 	}
 

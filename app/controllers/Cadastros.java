@@ -1,13 +1,24 @@
 package controllers;
 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 import java.text.Normalizer;
 import java.util.List;
 
 import models.Cadastro;
+import models.Perfil;
 import models.Status;
 import models.Turma;
+import play.mvc.Before;
 import play.mvc.Controller;
+import play.mvc.With;
+import security.Bibliotecario;
+import security.Seguranca;
 
+
+@With(Seguranca.class)
 public class Cadastros extends Controller{
 
 	public static void formCadastro() {
@@ -23,6 +34,8 @@ public class Cadastros extends Controller{
 	    return semAcentos.replaceAll("[^a-zA-Z0-9 ]", "").toLowerCase().trim();
 	}
 	
+
+	@Bibliotecario
 	public static void listar(String t) {
 	    List<Cadastro> todos = Cadastro.find("status != ?1", Status.INATIVO).fetch();
 	    List<Cadastro> cadastros = todos;
@@ -52,13 +65,17 @@ public class Cadastros extends Controller{
 		        flash.error("Nome é obrigatório");
 		        formCadastro();
 		    }
-		cadastro.nome = cadastro.nome.toUpperCase();
-		cadastro.senha = cadastro.senha.toLowerCase();
-		cadastro.save();
-		flash.success("Cadastro realizado com sucesso!!");
-		listar(null);
-	}
+		    Cadastro novo = new Cadastro();// LEMBRA: perfil ALUNO e status ATIVO vêm do construtor
+			novo.nome = cadastro.nome.toUpperCase();
+			novo.senha = cadastro.senha.toLowerCase();
+			novo.turma = cadastro.turma;
+			novo.save();
+
+			flash.success("Cadastro realizado com sucesso! Faça login.");
+			Logins.form();
+		}
 	
+	@Bibliotecario
 	public static void remover(Long id) {
 		Cadastro r = Cadastro.findById(id);
 		r.status = Status.INATIVO;

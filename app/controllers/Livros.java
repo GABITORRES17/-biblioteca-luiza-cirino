@@ -4,11 +4,16 @@ import models.Genero;
 import models.Livro;
 import models.Status;
 import play.mvc.*;
+import security.Bibliotecario;
+import security.Seguranca;
+
 import java.util.*;
 
 @With(Seguranca.class)
 public class Livros extends Controller {
  
+
+	@Bibliotecario
 	// Mostra formulário
     public static void form() {
     	Livro l = new Livro();
@@ -16,6 +21,8 @@ public class Livros extends Controller {
         render(l, generos);
     }
     
+
+	@Bibliotecario
     //Editar
     public static void editar(Long id) {
     	Livro l = Livro.findById(id);
@@ -40,7 +47,7 @@ public class Livros extends Controller {
         render(livro);
     }
   
-    
+    @Bibliotecario
     // Salva novo livro
     public static void salvar(Livro livro) {
     	livro.titulo = livro.titulo.toUpperCase();
@@ -54,7 +61,8 @@ public class Livros extends Controller {
     	flash.success("Livro cadastrado!");
     	listar(null); 
     }
-    
+
+	@Bibliotecario
     //Remover
     public static void remover(Long id) {
     	Livro r = Livro.findById(id);
@@ -63,7 +71,8 @@ public class Livros extends Controller {
     	flash.success("Livro removido!");
     	listar(null);
     } 
-    
+
+	@Bibliotecario
     //Emprestar
     public static void emprestar(Long id) {
     	Livro l = Livro.findById(id);
@@ -77,7 +86,8 @@ public class Livros extends Controller {
     	flash.success("Livro emprestado!");
     	listar(null);
     }
-    
+
+	@Bibliotecario
     //Devolver
     public static void devolver(Long id, int q) {
     	Livro l = Livro.findById(id);

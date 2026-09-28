@@ -3,8 +3,7 @@
 #{set title:'Listagem de Livro' /}
 
 <!-- 
-    BARRA DE BUSCA - Convertida para "input-group" do Bootstrap
-    Isso une visualmente o campo de texto e o botão de busca
+    BARRA DE BUSCA
 -->
 <form action="@{Livros.listar}" class="mb-3">
 	<div class="input-group">
@@ -14,12 +13,14 @@
 	</div>
 </form>
 
+#{if session.perfilUsuario == 'BIBLIOTECARIO'}
 <!-- Botão "Novo Livro" com ícone, alinhado à direita -->
 <div class="d-flex justify-content-end mb-3">
 	<a href="@{Livros.form}" class="btn btn-success">
 		<i class="fas fa-plus me-1"></i> Novo Livro
 	</a>
 </div>
+#{/if}
 
 <!-- Mensagem de erro usando o componente "alert" do Bootstrap em vez de texto vermelho cru -->
 #{if flash.error}
@@ -29,8 +30,7 @@
 #{/if}
 
 <!-- 
-    LISTA DE LIVROS - Cada livro agora é exibido em um "card" do Bootstrap,
-    em vez de parágrafos soltos. Isso deixa a leitura mais organizada.
+    LISTA DE LIVROS
 -->
 #{list items:livros, as:'l'}
 
@@ -54,7 +54,8 @@
 				</span>
 				#{/else}
 			</div>
-
+			
+			#{if session.perfilUsuario == 'BIBLIOTECARIO'}
 			<!-- Ações do livro agrupadas com espaçamento (gap) em vez de "|" -->
 			<div class="d-flex flex-wrap gap-2 mt-3">
 				<a href="@{Livros.editar(l.id)}" class="btn btn-outline-secondary btn-sm">
@@ -66,11 +67,13 @@
 				   		<i class="fas fa-trash me-1"></i> Remover
 				   </button>
 				</form>
+				#{/if}
 
 				<a href="@{Livros.detalhar(l.id)}" class="btn btn-outline-primary btn-sm">
 					<i class="fas fa-eye me-1"></i> Detalhar
 				</a>
-
+				
+				#{if session.perfilUsuario == 'BIBLIOTECARIO'}
 				#{if l.disponivel = true}
 				<form action="@{Livros.emprestar(l.id)}" method="post" class="d-inline">
 				    <button type="submit" class="btn btn-outline-info btn-sm">
@@ -86,6 +89,7 @@
 				   		<i class="fas fa-undo me-1"></i> Devolver
 				   </button>
 				</form>
+				#{/if}
 				#{/if}
 			</div>
 		</div>

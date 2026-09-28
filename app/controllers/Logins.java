@@ -10,17 +10,16 @@ public class Logins extends Controller{
 	}
 	
 	public static void logar(String login, String senha) {
-		if (!Cadastro.existeUsuario(login, senha)) {
+		Cadastro cadastroBanco = Cadastro.obterUsuario(login, senha);
+		if (cadastroBanco == null) {
 			flash.error("Usuário ou senha inválido. Tente novamente!");
-			form();	
-			session.put("usuarioLogado", login);
-			flash.success("Login realizado com sucesso!!");
-			Livros.listar(null);
+			form();
 		}
 		
 		session.put("usuarioLogado", login);
+		session.put("perfilUsuario", cadastroBanco.perfil.name());
 		flash.success("Login realizado com sucesso!!");
-		Livros.listar(login);
+		Livros.listar(null);
 		
 	}
 	

@@ -38,3 +38,11 @@
 		<i class="fas fa-arrow-left me-1"></i> Retornar
 	</a>
 </div>
+
+#{if session.perfilUsuario == 'BIBLIOTECARIO'}
+<div class="mt-3">
+	<a href="@{Cadastros.listar}" class="btn btn-outline-primary">
+		<i class="fas fa-arrow-left me-1"></i> Listar de Alunos
+	</a>
+</div>
+#{/if}
