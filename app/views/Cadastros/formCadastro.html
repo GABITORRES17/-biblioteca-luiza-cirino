@@ -7,12 +7,16 @@
 
 	<div class="mb-3">
 		<label class="form-label">Nome de Usuário</label>
-		<input type="text" name="cadastro.nome" value="${c.nome}" class="form-control" placeholder="Nome de Usuário" />
+		<input type="text" name="cadastro.nome" value="${c.nome}"
+	class="form-control #{ifError 'cadastro.nome'}is-invalid#{/ifError}" placeholder="Usuário" />
+<div class="invalid-feedback">#{error 'cadastro.nome' /}</div>
 	</div>
 
 	<div class="mb-3">
 		<label class="form-label">Senha</label>
-		<input type="text" name="cadastro.senha" value="${c.senha}" class="form-control" placeholder="Senha" />
+	<input type="text" name="cadastro.senha" value="${c.senha}"
+	class="form-control #{ifError 'cadastro.senha'}is-invalid#{/ifError}" placeholder="Senha" />
+<div class="invalid-feedback">#{error 'cadastro.senha' /}</div>
 	</div>
 	
 	<div class="mb-4">

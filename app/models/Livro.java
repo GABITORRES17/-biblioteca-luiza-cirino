@@ -6,6 +6,9 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.ManyToOne;
 
+import play.data.validation.Min;
+import play.data.validation.MinSize;
+import play.data.validation.Required;
 import play.db.jpa.Model;
 
 @Entity
@@ -14,11 +17,18 @@ public class Livro extends Model{
 	public String login;
 	public String senha;
 	
-    public String titulo;
-    public String autor;
-    public boolean disponivel;
+	@Required
+	@MinSize(2)
+	public String titulo;
+
+	@Required
+	@MinSize(3)
+	public String autor;
+
+	@Min(1)
+	public int quantidade;
     
-    public int quantidade;
+    public boolean disponivel;
     public int emprestados;
 
     @ManyToOne

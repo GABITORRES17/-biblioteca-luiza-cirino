@@ -11,6 +11,7 @@ import models.Cadastro;
 import models.Perfil;
 import models.Status;
 import models.Turma;
+import play.data.validation.Valid;
 import play.mvc.Before;
 import play.mvc.Controller;
 import play.mvc.With;
@@ -56,20 +57,23 @@ public class Cadastros extends Controller{
 	    render(cadastros, t);
 	}
 	
-	public static void salvar(Cadastro cadastro) {
-		 if (cadastro.senha == null || cadastro.senha.length() < 4) {
-		        flash.error("Senha deve ter pelo menos 4 dígitos");
-		        formCadastro();
-		    }
-		    if (cadastro.nome == null || cadastro.nome.isEmpty()) {
-		        flash.error("Nome é obrigatório");
-		        formCadastro();
-		    }
-		    Cadastro novo = new Cadastro();// LEMBRA: perfil ALUNO e status ATIVO vêm do construtor
-			novo.nome = cadastro.nome.toUpperCase();
-			novo.senha = cadastro.senha.toLowerCase();
-			novo.turma = cadastro.turma;
-			novo.save();
+	public static void salvar(@Valid Cadastro cadastro) {
+	    if (cadastro.nome != null
+	            && Cadastro.count("nome = ?1", cadastro.nome.toUpperCase()) > 0) {
+	        validation.addError("cadastro.nome", "Este nome de usuário já existe");
+	    }
+
+	    if (validation.hasErrors()) {
+	        Cadastro c = cadastro;
+	        List<Turma> turmas = Turma.findAll();
+	        renderTemplate("Cadastros/formCadastro.html", c, turmas);
+	    }
+
+	    Cadastro novo = new Cadastro();
+	    novo.nome = cadastro.nome.toUpperCase();
+	    novo.senha = cadastro.senha.toLowerCase();
+	    novo.turma = cadastro.turma;
+	    novo.save();
 
 			flash.success("Cadastro realizado com sucesso! Faça login.");
 			Logins.form();

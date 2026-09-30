@@ -3,6 +3,7 @@ package controllers;
 import models.Genero;
 import models.Livro;
 import models.Status;
+import play.data.validation.Valid;
 import play.mvc.*;
 import security.Bibliotecario;
 import security.Seguranca;
@@ -49,9 +50,15 @@ public class Livros extends Controller {
   
     @Bibliotecario
     // Salva novo livro
-    public static void salvar(Livro livro) {
-    	livro.titulo = livro.titulo.toUpperCase();
-    	livro.autor = livro.autor.toLowerCase();
+    public static void salvar(@Valid Livro livro) {
+        if (validation.hasErrors()) {
+            Livro l = livro;
+            List<Genero> generos = Genero.findAll();
+            renderTemplate("Livros/form.html", l, generos);
+        }
+
+        livro.titulo = livro.titulo.toUpperCase();
+        livro.autor = livro.autor.toLowerCase();
     	
     	if(livro.id == null) {
     		livro.emprestados = 0;

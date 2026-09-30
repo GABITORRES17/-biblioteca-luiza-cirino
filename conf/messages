@@ -1,3 +1,7 @@
 # You can specialize this file for each language.
 # For example, for French create a messages.fr file
 #
+validation.required=Campo obrigatório
+validation.minSize=Tamanho mínimo: %2$s caracteres
+validation.min=O valor mínimo é %2$s
+validation.email=E-mail inválido

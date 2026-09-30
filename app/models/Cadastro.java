@@ -5,14 +5,21 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.ManyToOne;
 
+import play.data.validation.MinSize;
+import play.data.validation.Required;
 import play.db.jpa.Model;
 
 @Entity
 public class Cadastro extends Model {
 
+	@Required
+	@MinSize(3)
 	public String nome;
-	public String senha;
 
+	@Required
+	@MinSize(4)
+	public String senha;
+	
 	@ManyToOne
 	public Turma turma;
 
