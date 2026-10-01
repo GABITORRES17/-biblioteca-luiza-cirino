@@ -16,12 +16,14 @@ import play.mvc.Before;
 import play.mvc.Controller;
 import play.mvc.With;
 import security.Bibliotecario;
+import security.Publico;
 import security.Seguranca;
 
 
 @With(Seguranca.class)
 public class Cadastros extends Controller{
 
+	@Publico
 	public static void formCadastro() {
 		Cadastro c = new Cadastro();
 		List<Turma> turmas = Turma.findAll();
@@ -57,6 +59,7 @@ public class Cadastros extends Controller{
 	    render(cadastros, t);
 	}
 	
+	@Publico
 	public static void salvar(@Valid Cadastro cadastro) {
 	    if (cadastro.nome != null
 	            && Cadastro.count("nome = ?1", cadastro.nome.toUpperCase()) > 0) {

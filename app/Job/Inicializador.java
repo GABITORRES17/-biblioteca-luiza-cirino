@@ -2,6 +2,7 @@ package Job;
 
 import models.Cadastro;
 import models.Genero;
+import models.Livro;
 import models.Perfil;
 import models.Turma;
 import play.jobs.Job;
@@ -88,6 +89,29 @@ public class Inicializador extends Job {
                 bibliotecaria.perfil = Perfil.BIBLIOTECARIO;
                 bibliotecaria.save();
             }
+            
+
+            criarLivro("Aída", "Giuseppe Verdi e Antonio Ghislanzoni", 1, "Romance");
+            criarLivro("Grandes amores da mitologia grega", "Dad Squarisi e Linda Goulart", 3, "Romance");
+            criarLivro("O calcanhar do Aquiles e outras histórias curiosas da Grécia Antiga", "Duda Teixeira", 1, "Fantasia");
+            criarLivro("13 dos melhores contos de amor da literatura brasileira", "Rosa Amanda Strausz", 1, "Romance");
+	}
+ 
+	// Só cria o livro se ainda não existir um com o mesmo título
+	private void criarLivro(String titulo, String autor, int quantidade, String nomeGenero) {
+		if (Livro.count("titulo = ?1", titulo) > 0) {
+			return;
+		}
+		Livro l = new Livro();
+		l.titulo = titulo;
+		l.autor = autor;
+		l.quantidade = quantidade;
+		l.emprestados = 0;
+		l.disponivel = true;
+		l.genero = Genero.find("genero = ?1", nomeGenero).first();
+		l.save();
 	}
 
-}
+	}
+
+

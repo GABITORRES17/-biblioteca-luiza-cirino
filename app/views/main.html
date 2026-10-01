@@ -1,10 +1,14 @@
-<!-- 
+<!--
     main.html - Layout principal do sistema de biblioteca
-    Este arquivo define a estrutura base que será estendida por todas as outras páginas
-    Utiliza Bootstrap 5 para estilização e responsividade
+    Estrutura base estendida por todas as outras páginas.
+    Usa Bootstrap 5 (layout, navbar, cards, alerts) + Font Awesome (ícones).
+
+    Atenção: o Play interpreta os símbolos dólar-chave, hashtag-chave, arroba-chave
+    e porcentagem-chave. Por isso o CSS e o JS abaixo evitam escrever essas
+    sequências coladas.
 -->
 <!DOCTYPE html>
-<html data-bs-theme="light">
+<html lang="pt-BR" data-bs-theme="light">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,44 +16,203 @@
 
 <!-- Bootstrap 5 CSS -->
 <link
-	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
 	rel="stylesheet">
 
 <!-- Font Awesome -->
 <link rel="stylesheet"
 	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
+<!-- Aplica o tema salvo ANTES de desenhar a página (evita "piscar" claro/escuro) -->
+<script>
+	(function() {
+		try {
+			var salvo = localStorage.getItem('theme');
+			var escuro = window.matchMedia
+					&& window.matchMedia('(prefers-color-scheme: dark)').matches;
+			var tema = salvo ? salvo : (escuro ? 'dark' : 'light');
+			document.documentElement.setAttribute('data-bs-theme', tema);
+		} catch (e) {
+		}
+	})();
+</script>
+
 <style>
-/* Estilos para transição suave */
-body {
+/* Paleta da marca: azul claro + cores de apoio. Troque aqui para mudar o visual todo. */
+:root {
+	--bib-azul: #0d6efd;
+	--bib-azul-claro: #4dabf7;
+	--bib-verde: #20c997;
+	--bib-amarelo: #ffd43b;
+	--bib-rosa: #ff6b9d;
+	--bib-roxo: #845ef7;
+}
+
+/* Fundo suave colorido (claro e escuro) */
+body.bg-bib {
+	background: linear-gradient(160deg, #e3f0ff 0%, #f2f8ff 45%, #fff4e3 100%) fixed;
 	transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-.card-shadow {
-	transition: background-color 0.3s ease, box-shadow 0.3s ease;
+[data-bs-theme="dark"] body.bg-bib {
+	background: linear-gradient(160deg, #0d1b33 0%, #121c2f 55%, #1d1730 100%) fixed;
 }
 
-/* Toggle switch personalizado */
+/* ---------- Navbar ---------- */
+.navbar-bib {
+	position: sticky;
+	background: linear-gradient(120deg, #0b6bff 0%, #2f93ff 55%, #4dabf7 100%);
+	padding-top: 0.6rem;
+	padding-bottom: 0.6rem;
+	transition: padding 0.25s ease, box-shadow 0.25s ease;
+}
+
+/* Faixa colorida fina embaixo da navbar */
+.navbar-bib::after {
+	content: "";
+	position: absolute;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	height: 4px;
+	background: linear-gradient(90deg, var(--bib-amarelo), var(--bib-verde), var(--bib-rosa), var(--bib-roxo));
+}
+
+/* Quando a página rola, a navbar fica mais compacta */
+.navbar-bib.rolou {
+	padding-top: 0.25rem;
+	padding-bottom: 0.25rem;
+	box-shadow: 0 6px 18px rgba(13, 110, 253, 0.35) !important;
+}
+
+.navbar-bib .navbar-brand {
+	letter-spacing: 0.3px;
+}
+
+.navbar-bib .navbar-brand i {
+	color: var(--bib-amarelo);
+	transition: transform 0.35s ease;
+}
+
+.navbar-bib .navbar-brand:hover i {
+	transform: rotate(-12deg) scale(1.25);
+}
+
+.navbar-bib .nav-link {
+	border-radius: 0.6rem;
+	padding: 0.45rem 0.85rem;
+	transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.navbar-bib .nav-link:hover, .navbar-bib .nav-link:focus {
+	background-color: rgba(255, 255, 255, 0.18);
+	color: #fff;
+	transform: translateY(-2px);
+}
+
+.navbar-bib .nav-link.active {
+	background-color: rgba(255, 255, 255, 0.28);
+	color: #fff;
+	font-weight: 600;
+}
+
+/* Cada item do menu tem um ícone de cor diferente */
+.ic-livros { color: var(--bib-amarelo); }
+.ic-novo { color: #8ce99a; }
+.ic-alunos { color: #ffa8c5; }
+
+.navbar-bib .nav-link i {
+	transition: transform 0.2s ease;
+}
+
+.navbar-bib .nav-link:hover i {
+	transform: scale(1.25);
+}
+
+/* Botão de tema redondo */
 .theme-toggle {
+	width: 38px;
+	height: 38px;
+	border-radius: 50%;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
 	cursor: pointer;
-	font-size: 20px;
-	padding: 5px 10px;
-	border-radius: 50px;
-	background: #e9ecef;
-	transition: all 0.3s ease;
-	border: none;
+	border: 1px solid rgba(255, 255, 255, 0.5);
+	background: rgba(255, 255, 255, 0.12);
+	color: var(--bib-amarelo);
+	transition: background-color 0.2s ease, transform 0.35s ease;
 }
 
 .theme-toggle:hover {
-	transform: scale(1.1);
+	background-color: rgba(255, 255, 255, 0.28);
+	transform: rotate(180deg);
 }
 
-[data-bs-theme="dark"] .theme-toggle {
-	background: #495057;
-	color: #ffd43b;
+/* Avatar com a inicial do usuário */
+.avatar-inicial {
+	width: 30px;
+	height: 30px;
+	border-radius: 50%;
+	background: linear-gradient(135deg, var(--bib-amarelo), #ff922b);
+	color: #3b2a00;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	font-weight: 700;
+	font-size: 0.85rem;
+	text-transform: uppercase;
 }
 
-/* Estilos personalizados para o modo escuro */
+/* ---------- Conteúdo ---------- */
+.card-shadow {
+	border: 0;
+	border-radius: 1rem;
+	box-shadow: 0 2px 10px rgba(13, 110, 253, 0.12);
+	transition: background-color 0.3s ease, box-shadow 0.25s ease, transform 0.25s ease;
+}
+
+.page-title {
+	display: flex;
+	align-items: center;
+	gap: 0.85rem;
+}
+
+/* Ícone do título com degradê e leve flutuação */
+.page-title .icone {
+	width: 50px;
+	height: 50px;
+	border-radius: 1rem;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	background: linear-gradient(135deg, var(--bib-azul), var(--bib-roxo));
+	color: #fff;
+	font-size: 1.3rem;
+	box-shadow: 0 6px 14px rgba(132, 94, 247, 0.4);
+	animation: flutuar 3.2s ease-in-out infinite;
+}
+
+.page-title h1 {
+	font-weight: 700;
+	background: linear-gradient(90deg, var(--bib-azul), var(--bib-roxo));
+	-webkit-background-clip: text;
+	background-clip: text;
+	-webkit-text-fill-color: transparent;
+}
+
+[data-bs-theme="dark"] .page-title h1 {
+	background: linear-gradient(90deg, #8ec5ff, #c4b1ff);
+	-webkit-background-clip: text;
+	background-clip: text;
+}
+
+/* Cartão de livro (usado na listagem): sobe e ganha sombra azul ao passar o mouse */
+.book-card:hover {
+	box-shadow: 0 10px 24px rgba(13, 110, 253, 0.25);
+	transform: translateY(-4px);
+}
+
 [data-bs-theme="dark"] .book-card {
 	background: #2b3035;
 	border-left-color: #0d6efd;
@@ -69,33 +232,102 @@ body {
 	color: #f5a3a3;
 }
 
-/* Realce dos links do menu (navbar) ao passar o mouse ou quando ativo */
-.navbar .nav-link {
-	transition: color 0.2s ease;
+/* Botões mais vivos e com movimento */
+.btn {
+	transition: transform 0.18s ease, box-shadow 0.18s ease, background-color 0.18s ease;
 }
 
-.navbar .nav-link:hover, .navbar .nav-link:focus {
-	color: #fff;
-	text-decoration: underline;
+.btn:hover {
+	transform: translateY(-2px);
+	box-shadow: 0 6px 14px rgba(0, 0, 0, 0.18);
+}
+
+.btn:active {
+	transform: translateY(0);
+}
+
+.btn-primary, .btn-success {
+	border: 0;
+}
+
+.btn-primary {
+	background: linear-gradient(135deg, #0d6efd, #3b9cff);
+}
+
+.btn-success {
+	background: linear-gradient(135deg, #12b886, #38d9a9);
+}
+
+/* Campos de formulário */
+.form-control:focus, .form-select:focus {
+	border-color: var(--bib-azul-claro);
+	box-shadow: 0 0 0 0.25rem rgba(77, 171, 247, 0.3);
+}
+
+/* Avisos com faixa colorida na lateral */
+.alert {
+	border-left: 5px solid;
+	border-radius: 0.75rem;
+}
+
+.alert-success { border-left-color: var(--bib-verde); }
+.alert-danger { border-left-color: var(--bib-rosa); }
+
+/* ---------- Animações ---------- */
+@keyframes subir {
+	from { opacity: 0; transform: translateY(18px); }
+	to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes flutuar {
+	0% { transform: translateY(0); }
+	50% { transform: translateY(-4px); }
+	100% { transform: translateY(0); }
+}
+
+/* Tudo que aparece no conteúdo entra subindo, um depois do outro */
+main > * {
+	animation: subir 0.5s ease both;
+}
+
+main > *:nth-child(2) { animation-delay: 0.06s; }
+main > *:nth-child(3) { animation-delay: 0.12s; }
+main > *:nth-child(4) { animation-delay: 0.18s; }
+main > *:nth-child(5) { animation-delay: 0.24s; }
+main > *:nth-child(6) { animation-delay: 0.3s; }
+main > *:nth-child(n+7) { animation-delay: 0.36s; }
+
+/* Quem prefere menos movimento no sistema não vê as animações */
+@media (prefers-reduced-motion: reduce) {
+	*, *::before, *::after {
+		animation: none !important;
+		transition: none !important;
+	}
+}
+
+footer.rodape {
+	border-top: 3px solid transparent;
+	border-image: linear-gradient(90deg, var(--bib-amarelo), var(--bib-verde), var(--bib-rosa), var(--bib-roxo)) 1;
 }
 </style>
 </head>
-<body>
-	<!-- 
-        NAVBAR - Menu de navegação principal (adicionado com componente Navbar do Bootstrap)
-        Fica fora do card principal para ocupar a largura inteira da página
-        Usa "sticky-top" para acompanhar o scroll e "shadow-sm" para um leve destaque
-    -->
-	<nav
-		class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top shadow-sm mb-4">
-		<div class="container">
-			<!-- Marca/Logo da navbar, leva para a Home -->
+
+<!-- Coluna ocupando a altura toda: o rodapé fica sempre embaixo da tela -->
+<body class="bg-bib d-flex flex-column min-vh-100">
+
+	<!-- ================= NAVBAR ================= -->
+	<nav class="navbar navbar-expand-lg navbar-dark navbar-bib sticky-top shadow-sm"
+		data-bs-theme="dark">
+		<div class="container" style="max-width: 1000px;">
+
+			<!-- Marca: leva para a lista de livros (logado) ou para o login -->
 			<a class="navbar-brand d-flex align-items-center gap-2 fw-bold"
-				href="@{Application.index}"> <i class="fas fa-book-open"></i>
-				Biblioteca Digital
+				#{if session.usuarioLogado}href="@{Livros.listar()}"#{/if}
+				#{else}href="@{Logins.form()}"#{/else}>
+				<i class="fas fa-book-open"></i> Biblioteca Digital
 			</a>
 
-			<!-- Botão hambúrguer exibido em telas pequenas (colapsa o menu) -->
+			<!-- Botão hambúrguer (telas pequenas) -->
 			<button class="navbar-toggler" type="button"
 				data-bs-toggle="collapse" data-bs-target="#menuPrincipal"
 				aria-controls="menuPrincipal" aria-expanded="false"
@@ -103,119 +335,150 @@ body {
 				<span class="navbar-toggler-icon"></span>
 			</button>
 
-			<!-- Conteúdo do menu que colapsa em telas pequenas -->
 			<div class="collapse navbar-collapse" id="menuPrincipal">
-				<ul class="navbar-nav me-auto mb-2 mb-lg-0">
-					<li class="nav-item"><a class="nav-link"
-						href="@{Livros.form()}"><i class="fas fa-house me-1"></i>
-							Início</a></li>
-					<li class="nav-item"><a class="nav-link"
-						href="@{Livros.listar()}"><i class="fas fa-list me-1"></i>
-							Listar Livros</a></li>
-					<li class="nav-item"><a class="nav-link"
-						href="@{Livros.form()}"><i class="fas fa-plus me-1"></i> Novo
-							Livro</a></li>
-					<li class="nav-item"><a class="nav-link"
-						href="@{Cadastros.formCadastro()}"><i class="fas fa-plus me-1"></i>Cadastro
-							de Alunos</a></li>
+
+				<!-- Menu da esquerda: só aparece para quem está logado -->
+				<ul class="navbar-nav me-auto mb-2 mb-lg-0 gap-lg-1">
+					#{if session.usuarioLogado}
+					<li class="nav-item"><a
+						class="nav-link ${request.controller == 'Livros' && request.action != 'Livros.form' ? 'active' : ''}"
+						href="@{Livros.listar()}"><i class="fas fa-book me-1 ic-livros"></i> Livros</a></li>
+
+					#{if session.perfilUsuario == 'BIBLIOTECARIO'}
+					<li class="nav-item"><a
+						class="nav-link ${request.action == 'Livros.form' ? 'active' : ''}"
+						href="@{Livros.form()}"><i class="fas fa-plus me-1 ic-novo"></i> Novo livro</a></li>
+					<li class="nav-item"><a
+						class="nav-link ${request.controller == 'Cadastros' ? 'active' : ''}"
+						href="@{Cadastros.listar()}"><i class="fas fa-users me-1 ic-alunos"></i> Alunos</a></li>
+					#{/if}
+					#{/if}
 				</ul>
 
-				<!-- Usuário e botão de tema movidos para dentro da navbar -->
-				<div class="d-flex align-items-center gap-3">
-					<span class="text-white-50 small"> <span
-						class="text-white-50 small"> <i
-							class="fas fa-user-circle me-1"></i> ${session.usuarioLogado}
-					</span> #{if session.usuarioLogado} <a href="@{Logins.sair}"
-						class="btn btn-sm btn-outline-light">Sair</a> #{/if}
+				<!-- Lado direito: tema + usuário -->
+				<div class="d-flex align-items-center gap-2">
 
-					</span>
-					<button class="theme-toggle" id="themeToggle" title="Alternar tema">
+					<button class="theme-toggle" id="themeToggle" type="button"
+						title="Alternar tema claro/escuro" aria-label="Alternar tema">
 						<i class="fas fa-moon" id="themeIcon"></i>
 					</button>
+
+					#{if session.usuarioLogado}
+					<div class="dropdown">
+						<button class="btn btn-sm btn-outline-light d-flex align-items-center gap-2 px-2"
+							type="button" data-bs-toggle="dropdown" aria-expanded="false">
+							<span class="avatar-inicial">${session.usuarioLogado?.take(1)}</span>
+							<span class="d-none d-sm-inline">${session.usuarioLogado}</span>
+						</button>
+						<ul class="dropdown-menu dropdown-menu-end shadow">
+							<li class="px-3 py-2">
+								<div class="fw-semibold">${session.usuarioLogado}</div>
+								#{if session.perfilUsuario == 'BIBLIOTECARIO'}
+								<span class="badge text-bg-primary">Bibliotecária</span>
+								#{/if}
+								#{else}
+								<span class="badge text-bg-secondary">Aluno(a)</span>
+								#{/else}
+							</li>
+							<li><hr class="dropdown-divider"></li>
+							<li><a class="dropdown-item" href="@{Logins.sair()}"><i
+									class="fas fa-right-from-bracket me-2"></i> Sair</a></li>
+						</ul>
+					</div>
+					#{/if}
+					#{else}
+					<a href="@{Logins.form()}" class="btn btn-sm btn-light"><i
+						class="fas fa-right-to-bracket me-1"></i> Entrar</a>
+					<a href="@{Cadastros.formCadastro()}"
+						class="btn btn-sm btn-outline-light d-none d-sm-inline-block">Cadastrar-se</a>
+					#{/else}
 				</div>
 			</div>
 		</div>
 	</nav>
 
-	<div class="container main-container">
-		<div class="card card-shadow">
-			<div class="card-body p-4">
+	<!-- ================= CONTEÚDO ================= -->
+	<main class="container flex-grow-1 py-4" style="max-width: 1000px;">
 
-				<!-- TÍTULO DA PÁGINA -->
-				<div class="border-bottom pb-2 mb-3 d-flex align-items-center gap-2">
-					<i class="fas fa-book text-primary"></i>
-					<h2 class="h4 mb-0">#{get 'title' /}</h2>
-				</div>
-
-				<!-- MENSAGENS FLASH -->
-				#{if flash.success}
-				<div class="alert alert-success alert-dismissible fade show"
-					role="alert">
-					<i class="fas fa-check-circle me-2"></i> ${flash.success}
-					<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-				</div>
-				#{/if} #{if flash.error}
-				<div class="alert alert-danger alert-dismissible fade show"
-					role="alert">
-					<i class="fas fa-exclamation-circle me-2"></i> ${flash.error}
-					<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-				</div>
-				#{/if}
-
-				<!-- CONTEÚDO -->
-				#{doLayout /}
-
-				<!-- RODAPÉ -->
-				<footer class="mt-4 pt-3 border-top text-center text-muted small">
-					<i class="fas fa-code me-1"></i> Sistema de Biblioteca &bull;
-					Gabriela Torres & Júllia Evny <span class="mx-2">|</span> <i
-						class="far fa-calendar-alt"></i> 2026
-				</footer>
-
-			</div>
+		<!-- Título da página -->
+		<div class="page-title mb-4">
+			<span class="icone"><i class="fas fa-book"></i></span>
+			<h1 class="h3 mb-0">#{get 'title' /}</h1>
 		</div>
-	</div>
 
-	<!-- Bootstrap 5 JS -->
+		<!-- Mensagens flash (as de sucesso somem sozinhas depois de alguns segundos) -->
+		#{if flash.success}
+		<div class="alert alert-success alert-dismissible fade show shadow-sm border-0 alert-auto"
+			role="alert">
+			<i class="fas fa-check-circle me-2"></i> ${flash.success}
+			<button type="button" class="btn-close" data-bs-dismiss="alert"
+				aria-label="Fechar"></button>
+		</div>
+		#{/if}
+		#{if flash.error}
+		<div class="alert alert-danger alert-dismissible fade show shadow-sm border-0"
+			role="alert">
+			<i class="fas fa-exclamation-circle me-2"></i> ${flash.error}
+			<button type="button" class="btn-close" data-bs-dismiss="alert"
+				aria-label="Fechar"></button>
+		</div>
+		#{/if}
+
+		#{doLayout /}
+	</main>
+
+	<!-- ================= RODAPÉ ================= -->
+	<footer class="rodape py-3 text-center text-body-secondary small bg-body">
+		<div class="container">
+			<i class="fas fa-code me-1"></i> Sistema de Biblioteca &bull;
+			Gabriela Torres &amp; Júllia Evny <span class="mx-2">|</span> <i
+				class="far fa-calendar-alt"></i> 2026
+		</div>
+	</footer>
+
+	<!-- Bootstrap 5 JS (necessário para menu, dropdown e alertas) -->
 	<script
-		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-	<!-- Script para alternar tema -->
 	<script>
-		// Função para alternar o tema
-		function toggleTheme() {
-			const html = document.documentElement;
-			const currentTheme = html.getAttribute('data-bs-theme');
-			const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-
-			html.setAttribute('data-bs-theme', newTheme);
-			localStorage.setItem('theme', newTheme);
-
-			// Mudar ícone
-			const icon = document.getElementById('themeIcon');
-			if (newTheme === 'dark') {
-				icon.className = 'fas fa-sun';
-			} else {
-				icon.className = 'fas fa-moon';
-			}
+		// Troca o ícone do botão conforme o tema atual
+		function atualizarIcone() {
+			var tema = document.documentElement.getAttribute('data-bs-theme');
+			document.getElementById('themeIcon').className = (tema === 'dark')
+					? 'fas fa-sun' : 'fas fa-moon';
 		}
 
-		// Carregar tema salvo
-		document.addEventListener('DOMContentLoaded', function() {
-			const savedTheme = localStorage.getItem('theme');
-			const html = document.documentElement;
-
-			if (savedTheme) {
-				html.setAttribute('data-bs-theme', savedTheme);
-				const icon = document.getElementById('themeIcon');
-				if (savedTheme === 'dark') {
-					icon.className = 'fas fa-sun';
-				}
+		// Alterna claro/escuro e guarda a escolha no navegador
+		function toggleTheme() {
+			var html = document.documentElement;
+			var novo = html.getAttribute('data-bs-theme') === 'light' ? 'dark' : 'light';
+			html.setAttribute('data-bs-theme', novo);
+			try {
+				localStorage.setItem('theme', novo);
+			} catch (e) {
 			}
+			atualizarIcone();
+		}
 
-			// Adicionar evento ao botão
-			document.getElementById('themeToggle').addEventListener('click',
-					toggleTheme);
+		document.addEventListener('DOMContentLoaded', function() {
+			atualizarIcone();
+			document.getElementById('themeToggle').addEventListener('click', toggleTheme);
+
+			// Fecha sozinho o aviso de sucesso depois de 5 segundos
+			// Navbar fica compacta quando a página rola
+			var barra = document.querySelector('.navbar-bib');
+			function aoRolar() {
+				barra.classList.toggle('rolou', window.scrollY > 10);
+			}
+			window.addEventListener('scroll', aoRolar);
+			aoRolar();
+
+			var avisos = document.querySelectorAll('.alert-auto');
+			avisos.forEach(function(aviso) {
+				setTimeout(function() {
+					bootstrap.Alert.getOrCreateInstance(aviso).close();
+				}, 5000);
+			});
 		});
 	</script>
 </body>
