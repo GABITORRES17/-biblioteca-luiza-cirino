@@ -1,23 +1,8 @@
-# Play Framework 1.x
-tmp/
-logs/
-precompiled/
-data/
-test-result/
-*.iml
-.idea/
-
-# Eclipse
 .classpath
 .project
 .settings/
-
-# Sistema
-.DS_Store
-*.log
-
-# Build/compilado
-eclipse/classes/
-
-# Banco de dados local
-db/
+eclipse/
+modules/
+documentation/
+tmp/
+data/
