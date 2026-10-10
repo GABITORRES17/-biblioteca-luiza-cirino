@@ -40,12 +40,17 @@
 <style>
 /* Paleta da marca: azul claro + cores de apoio. Troque aqui para mudar o visual todo. */
 :root {
-	--bib-azul: #0d6efd;
-	--bib-azul-claro: #4dabf7;
-	--bib-verde: #20c997;
-	--bib-amarelo: #ffd43b;
-	--bib-rosa: #ff6b9d;
-	--bib-roxo: #845ef7;
+	/* Paleta da Biblioteca Escolar da Luiza */
+	--bib-azul: #5d17eb;        /* roxo (cor principal) */
+	--bib-azul-claro: #5ce1e6;  /* ciano */
+	--bib-verde: #5ce1e6;       /* ciano */
+	--bib-amarelo: #ffd900;
+	--bib-rosa: #ff5757;        /* coral */
+	--bib-roxo: #5d17eb;
+	--bib-laranja: #fe914c;
+	--bs-primary: #5d17eb;
+	--bs-primary-rgb: 93, 23, 235;
+	--bs-link-color: #5d17eb;
 }
 
 /* Modo claro: em vez de branco puro, um azul bem clarinho (cartões, campos, rodapé) */
@@ -69,7 +74,7 @@ body.bg-bib {
 /* ---------- Navbar ---------- */
 .navbar-bib {
 	position: sticky;
-	background: linear-gradient(120deg, #0b6bff 0%, #2f93ff 55%, #4dabf7 100%);
+	background: #5d17eb;
 	padding-top: 0.6rem;
 	padding-bottom: 0.6rem;
 	transition: padding 0.25s ease, box-shadow 0.25s ease;
@@ -79,20 +84,25 @@ body.bg-bib {
 .navbar-bib.rolou {
 	padding-top: 0.25rem;
 	padding-bottom: 0.25rem;
-	box-shadow: 0 6px 18px rgba(13, 110, 253, 0.35) !important;
+	box-shadow: 0 6px 18px rgba(93, 23, 235, 0.35) !important;
 }
 
 .navbar-bib .navbar-brand {
 	letter-spacing: 0.3px;
 }
 
-.navbar-bib .navbar-brand i {
-	color: var(--bib-amarelo);
-	transition: transform 0.35s ease;
+.navbar-bib.rolou .navbar-brand .logo-bib {
+	height: 48px;
+	width: 48px;
 }
 
-.navbar-bib .navbar-brand:hover i {
-	transform: rotate(-12deg) scale(1.25);
+.navbar-bib .navbar-brand .logo-bib {
+	height: 64px;
+	width: 64px;
+	border-radius: 50%;
+	background: #fbe5f2;
+	object-fit: cover;
+	transition: height 0.25s ease, width 0.25s ease;
 }
 
 .navbar-bib .nav-link {
@@ -114,9 +124,9 @@ body.bg-bib {
 }
 
 /* Cada item do menu tem um ícone de cor diferente */
-.ic-livros { color: var(--bib-amarelo); }
-.ic-novo { color: #8ce99a; }
-.ic-alunos { color: #ffa8c5; }
+.ic-livros { color: #5ce1e6; }
+.ic-novo { color: #fe914c; }
+.ic-alunos { color: #ff8f8f; }
 
 .navbar-bib .nav-link i {
 	transition: transform 0.2s ease;
@@ -165,7 +175,7 @@ body.bg-bib {
 .card-shadow {
 	border: 0;
 	border-radius: 1rem;
-	box-shadow: 0 2px 10px rgba(13, 110, 253, 0.12);
+	box-shadow: 0 2px 10px rgba(93, 23, 235, 0.12);
 	transition: background-color 0.3s ease, box-shadow 0.25s ease, transform 0.25s ease;
 }
 
@@ -190,21 +200,21 @@ body.bg-bib {
 
 .page-title h1 {
 	font-weight: 700;
-	background: linear-gradient(90deg, var(--bib-azul), var(--bib-roxo));
+	background: linear-gradient(90deg, #5d17eb, #ff5757);
 	-webkit-background-clip: text;
 	background-clip: text;
 	-webkit-text-fill-color: transparent;
 }
 
 [data-bs-theme="dark"] .page-title h1 {
-	background: linear-gradient(90deg, #8ec5ff, #c4b1ff);
+	background: linear-gradient(90deg, #5ce1e6, #c4b1ff);
 	-webkit-background-clip: text;
 	background-clip: text;
 }
 
 [data-bs-theme="dark"] .book-card {
 	background: #2b3035;
-	border-left-color: #0d6efd;
+	border-left-color: #5d17eb;
 }
 
 [data-bs-theme="dark"] .badge-available {
@@ -236,17 +246,19 @@ body.bg-bib {
 }
 
 .btn-primary {
-	background: linear-gradient(135deg, #0d6efd, #3b9cff);
+	background: #5d17eb;
+	color: #fff;
 }
 
 .btn-success {
-	background: linear-gradient(135deg, #12b886, #38d9a9);
+	background: #5ce1e6;
+	color: #0b1b33;
 }
 
 /* Campos de formulário */
 .form-control:focus, .form-select:focus {
-	border-color: var(--bib-azul-claro);
-	box-shadow: 0 0 0 0.25rem rgba(77, 171, 247, 0.3);
+	border-color: #5d17eb;
+	box-shadow: 0 0 0 0.25rem rgba(93, 23, 235, 0.25);
 }
 
 /* Avisos com faixa colorida na lateral */
@@ -305,7 +317,7 @@ main > *:nth-child(n+7) { animation-delay: 0.36s; }
 			<a class="navbar-brand d-flex align-items-center gap-2 fw-bold"
 				#{if session.usuarioLogado}href="@{Livros.listar()}"#{/if}
 				#{else}href="@{Logins.form()}"#{/else}>
-				<i class="fas fa-book-open"></i> Biblioteca Digital
+				<img src="@{'/public/images/logo.png'}" alt="Biblioteca Escolar da Luiza" class="logo-bib">
 			</a>
 
 			<!-- Botão hambúrguer (telas pequenas) -->
