@@ -1,39 +1,46 @@
-#{extends 'main.html' /}
-#{set title:'Detalhamento de Livros' /}
+#{extends 'main.html' /} #{set title:'Detalhamento de Livros' /}
 
 <!-- 
     Detalhes do livro em um "card" com "list-group", que separa cada
     informação em uma linha bem definida, ao invés de parágrafos soltos
 -->
-<div class="card card-shadow mb-3">
-	<ul class="list-group list-group-flush">
-		<li class="list-group-item d-flex justify-content-between">
-			<span class="fw-bold">Título</span>
-			<span>${livro.titulo}</span>
-		</li>
-		<li class="list-group-item d-flex justify-content-between">
-			<span class="fw-bold">Autor(a)</span>
-			<span>${livro.autor}</span>
-		</li>
-		<li class="list-group-item d-flex justify-content-between">
-			<span class="fw-bold">Gênero</span>
-			<span>${livro.genero.genero}</span>
-		</li>
-		<li class="list-group-item d-flex justify-content-between">
-			<span class="fw-bold">Total de exemplares</span>
-			<span class="badge bg-primary-subtle text-primary-emphasis">${livro.quantidade}</span>
-		</li>
-		<li class="list-group-item d-flex justify-content-between">
-			<span class="fw-bold">Disponíveis</span>
-			<span class="badge badge-available bg-success-subtle text-success-emphasis">${livro.quantidade - livro.emprestados}</span>
-		</li>
-		<li class="list-group-item d-flex justify-content-between">
-			<span class="fw-bold">Emprestados</span>
-			<span class="badge badge-unavailable bg-danger-subtle text-danger-emphasis">${livro.emprestados}</span>
-		</li>
-	</ul>
+<div class="row g-3 mb-3">
+
+	#{if livro.capa?.exists()}
+	<div class="col-12 col-md-4 col-lg-3 text-center">
+		<img src="@{Livros.capa(livro.id)}" alt="Capa de ${livro.titulo}"
+			class="img-fluid rounded shadow"
+			style="max-height: 420px; object-fit: cover;" />
+	</div>
+	#{/if}
+
+	<div class="col">
+		<div class="card card-shadow">
+			<ul class="list-group list-group-flush">
+				<li class="list-group-item d-flex justify-content-between"><span
+					class="fw-bold">Título</span> <span>${livro.titulo}</span></li>
+				<li class="list-group-item d-flex justify-content-between"><span
+					class="fw-bold">Autor(a)</span> <span>${livro.autor}</span></li>
+				<li class="list-group-item d-flex justify-content-between"><span
+					class="fw-bold">Gênero</span> <span>${livro.genero.genero}</span></li>
+				<li class="list-group-item d-flex justify-content-between"><span
+					class="fw-bold">Total de exemplares</span> <span
+					class="badge bg-primary-subtle text-primary-emphasis">${livro.quantidade}</span>
+				</li>
+				<li class="list-group-item d-flex justify-content-between"><span
+					class="fw-bold">Disponíveis</span> <span
+					class="badge badge-available bg-success-subtle text-success-emphasis">${livro.quantidade
+						- livro.emprestados}</span></li>
+				<li class="list-group-item d-flex justify-content-between"><span
+					class="fw-bold">Emprestados</span> <span
+					class="badge badge-unavailable bg-danger-subtle text-danger-emphasis">${livro.emprestados}</span>
+				</li>
+			</ul>
+		</div>
+	</div>
+
 </div>
 
-<a href="@{Livros.listar}" class="btn btn-outline-primary">
-	<i class="fas fa-arrow-left me-1"></i> Retornar
+<a href="@{Livros.listar}" class="btn btn-outline-primary"> <i
+	class="fas fa-arrow-left me-1"></i> Retornar
 </a>

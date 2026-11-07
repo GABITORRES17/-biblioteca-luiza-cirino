@@ -9,6 +9,7 @@ import javax.persistence.ManyToOne;
 import play.data.validation.Min;
 import play.data.validation.MinSize;
 import play.data.validation.Required;
+import play.db.jpa.Blob;
 import play.db.jpa.Model;
 
 @Entity
@@ -40,5 +41,7 @@ public class Livro extends Model{
     public Livro() {
     	this.status = Status.ATIVO;
     }
+    
+    public Blob capa;
    
 }

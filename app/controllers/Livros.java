@@ -39,8 +39,19 @@ public class Livros extends Controller {
         } else {
         	livros = Livro.find("lower(titulo) like ?1 or lower(autor) like ?1", "%"+termo.toLowerCase()+"%").fetch();
         }
-        render(livros, termo);
+        List<Genero> generos = Genero.findAll();
+        Genero generoSel = null;  
+        render(livros, termo, generos, generoSel);
     }
+    
+     //Seleção de Genero
+    public static void GeneroS(Long id) {
+    	Genero generoSel = Genero.findById(id);
+    	List<Genero> generos = Genero.findAll();
+    	List<Livro> livros = Livro.find("genero.id = ?1 and status !=?2", id, Status.INATIVO).fetch();
+    	String termo = null;
+    	renderTemplate("Livros/listar.html", livros, termo, generos, generoSel);
+    	}
 
     // Mostra detalhar
     public static void detalhar(Long id) {
@@ -108,4 +119,16 @@ public class Livros extends Controller {
     	flash.success("Livro devolvido!");
     	listar(null);
     }
+	
+	//Capa do livro
+	public static void capa(Long id) {
+		Livro l = Livro.findById(id);
+		notFoundIfNull(1);
+		if (l.capa == null || !l.capa.exists()) {
+			notFound();
+		}
+		
+		response.setContentTypeIfNotSet(l.capa.type());
+		renderBinary(l.capa.get());
+	}
 }

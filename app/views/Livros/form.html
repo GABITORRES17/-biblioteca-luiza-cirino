@@ -14,7 +14,7 @@
 </h4>
 #{/else}
 
-<form action="/livros/salvar" method="post" class="card card-shadow p-4">
+<form action="/livros/salvar" method="post" enctype="multipart/form-data" class="card card-shadow p-4">
 
 	<input type="hidden" name="livro.id" value="${l.id}" />
 
@@ -38,7 +38,10 @@
 		class="form-control #{ifError 'livro.quantidade'}is-invalid#{/ifError}" />
 	<div class="invalid-feedback">#{error 'livro.quantidade' /}</div>
 </div>
-
+<div class="mb-3">
+	<label class="form-label">Capa</label>
+	<input type="file" name="livro.capa" accept="image/*" class="form-control" />
+</div>
 	<div class="mb-4">
 		<label class="form-label">Gênero</label> <select
 			name="livro.genero.id" class="form-select"> #{list

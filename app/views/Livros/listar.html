@@ -1,32 +1,38 @@
-#{extends 'main.html' /}
+#{extends 'main.html' /} #{set title:'Listagem de Livro' /}
 
-#{set title:'Listagem de Livro' /}
-
+<ul class="nav nav-pills mb-3">
+	<li class="nav-item"><a
+		class="nav-link ${generoSel == null ? 'active' : ''}"
+		href="@{Livros.listar}">Todos</a></li> #{list items:generos, as:'g'}
+	<li class="nav-item"><a
+		class="nav-link ${generoSel?.id == g.id ? 'active' : ''}"
+		href="@{Livros.GeneroS(g.id)}">${g.genero}</a></li> #{/list}
+</ul>
 <!-- 
     BARRA DE BUSCA
 -->
 <form action="@{Livros.listar}" class="mb-3">
 	<div class="input-group">
-		<span class="input-group-text"><i class="fas fa-search"></i></span>
-		<input type="text" name="termo" value="${termo}" class="form-control" placeholder="Informe o titulo ou autor" />
+		<span class="input-group-text"><i class="fas fa-search"></i></span> <input
+			type="text" name="termo" value="${termo}" class="form-control"
+			placeholder="Informe o titulo ou autor" />
 		<button type="submit" class="btn btn-primary">Buscar</button>
 	</div>
 </form>
-
 #{if session.perfilUsuario == 'BIBLIOTECARIO'}
 <!-- Botão "Novo Livro" com ícone, alinhado à direita -->
 <div class="d-flex justify-content-end mb-3">
-	<a href="@{Livros.form}" class="btn btn-success">
-		<i class="fas fa-plus me-1"></i> Novo Livro
+	<a href="@{Livros.form}" class="btn btn-success"> <i
+		class="fas fa-plus me-1"></i> Novo Livro
 	</a>
 </div>
 #{/if}
 
 <!-- Mensagem de erro usando o componente "alert" do Bootstrap em vez de texto vermelho cru -->
 #{if flash.error}
-	<div class="alert alert-danger" role="alert">
-		<i class="fas fa-exclamation-circle me-2"></i> ${flash.error}
-	</div>
+<div class="alert alert-danger" role="alert">
+	<i class="fas fa-exclamation-circle me-2"></i> ${flash.error}
+</div>
 #{/if}
 
 <!-- 
@@ -34,71 +40,74 @@
 -->
 #{list items:livros, as:'l'}
 
-	<div class="card card-shadow book-card border-start border-primary border-3 mb-3">
-		<div class="card-body">
-			<div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+<div class="card card-shadow book-card border-start border-primary border-3 mb-3">
+	<div class="card-body d-flex gap-3">
+		#{if l.capa?.exists()} <img src="@{Livros.capa(l.id)}"
+			alt="Capa de ${l.titulo}"
+			style="width: 90px; height: 130px; object-fit: cover; border-radius: 6px;" />
+		#{/if}
+		<div class="flex-grow-1">
+			<div
+				class="d-flex justify-content-between align-items-start flex-wrap gap-2">
 				<div>
 					<h5 class="card-title mb-1">${l.titulo}</h5>
 					<h6 class="card-subtitle text-muted mb-2">${l.autor}</h6>
 				</div>
 
 				<!-- Badge (selo) indicando disponibilidade, com cores diferentes -->
-				#{if l.disponivel}
-				<span class="badge badge-available bg-success-subtle text-success-emphasis">
+				#{if l.disponivel} <span
+					class="badge badge-available bg-success-subtle text-success-emphasis">
 					<i class="fas fa-check-circle me-1"></i> Disponível
-				</span>
-				#{/if}
-				#{else}
-				<span class="badge badge-unavailable bg-danger-subtle text-danger-emphasis">
+				</span> #{/if} #{else} <span
+					class="badge badge-unavailable bg-danger-subtle text-danger-emphasis">
 					<i class="fas fa-times-circle me-1"></i> Não está disponível
-				</span>
-				#{/else}
+				</span> #{/else}
 			</div>
-			
+
 			#{if session.perfilUsuario == 'BIBLIOTECARIO'}
 			<!-- Ações do livro agrupadas com espaçamento (gap) em vez de "|" -->
 			<div class="d-flex flex-wrap gap-2 mt-3">
-				<a href="@{Livros.editar(l.id)}" class="btn btn-outline-secondary btn-sm">
-					<i class="fas fa-pen me-1"></i> Editar
+				<a href="@{Livros.editar(l.id)}"
+					class="btn btn-outline-secondary btn-sm"> <i
+					class="fas fa-pen me-1"></i> Editar
 				</a>
 
-				<form action="@{Livros.remover(l.id)}" method="post" class="d-inline">
-				   <button type="submit" class="btn btn-outline-danger btn-sm">
-				   		<i class="fas fa-trash me-1"></i> Remover
-				   </button>
+				<form action="@{Livros.remover(l.id)}" method="post"
+					class="d-inline">
+					<button type="submit" class="btn btn-outline-danger btn-sm">
+						<i class="fas fa-trash me-1"></i> Remover
+					</button>
 				</form>
-				#{/if}
-
-				<a href="@{Livros.detalhar(l.id)}" class="btn btn-outline-primary btn-sm">
-					<i class="fas fa-eye me-1"></i> Detalhar
-				</a>
-				
-				#{if session.perfilUsuario == 'BIBLIOTECARIO'}
-				#{if l.disponivel = true}
-				<form action="@{Livros.emprestar(l.id)}" method="post" class="d-inline">
-				    <button type="submit" class="btn btn-outline-info btn-sm">
-				    	<i class="fas fa-hand-holding me-1"></i> Emprestar
-				    </button>
+				#{/if} <a href="@{Livros.detalhar(l.id)}"
+					class="btn btn-outline-primary btn-sm"> <i
+					class="fas fa-eye me-1"></i> Detalhar
+				</a> #{if session.perfilUsuario == 'BIBLIOTECARIO'} #{if l.disponivel =
+				true}
+				<form action="@{Livros.emprestar(l.id)}" method="post"
+					class="d-inline">
+					<button type="submit" class="btn btn-outline-info btn-sm">
+						<i class="fas fa-hand-holding me-1"></i> Emprestar
+					</button>
 				</form>
-				#{/if}
-
-				#{if l.emprestados > 0}
-				<form action="@{Livros.devolver(l.id)}" method="post" class="d-inline-flex align-items-center gap-1">
-				   <input type="number" name="q" value="1" min="1" max="${l.emprestados}" class="form-control form-control-sm" style="width:70px" />
-				   <button type="submit" class="btn btn-outline-warning btn-sm">
-				   		<i class="fas fa-undo me-1"></i> Devolver
-				   </button>
+				#{/if} #{if l.emprestados > 0}
+				<form action="@{Livros.devolver(l.id)}" method="post"
+					class="d-inline-flex align-items-center gap-1">
+					<input type="number" name="q" value="1" min="1"
+						max="${l.emprestados}" class="form-control form-control-sm"
+						style="width: 70px" />
+					<button type="submit" class="btn btn-outline-warning btn-sm">
+						<i class="fas fa-undo me-1"></i> Devolver
+					</button>
 				</form>
-				#{/if}
-				#{/if}
+				#{/if} #{/if}
 			</div>
 		</div>
 	</div>
+</div>
 
-#{/list}
-#{else}
+	#{/list} #{else}
 	<!-- Estado vazio (nenhum livro cadastrado) usando um "alert" informativo -->
 	<div class="alert alert-info text-center" role="alert">
 		<i class="fas fa-info-circle me-2"></i> Nenhum livro cadastrado.
 	</div>
-#{/else}
+	#{/else}

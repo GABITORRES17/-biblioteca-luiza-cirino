@@ -7,6 +7,11 @@ import models.Perfil;
 import models.Turma;
 import play.jobs.Job;
 import play.jobs.OnApplicationStart;
+import java.io.File;
+import java.io.FileInputStream;
+import play.Play;
+import play.db.jpa.Blob;
+import play.libs.MimeTypes;
 
 @OnApplicationStart
 public class Inicializador extends Job {
@@ -91,14 +96,13 @@ public class Inicializador extends Job {
             }
             
 
-            criarLivro("Aída", "Giuseppe Verdi e Antonio Ghislanzoni", 1, "Romance");
-            criarLivro("Grandes amores da mitologia grega", "Dad Squarisi e Linda Goulart", 3, "Romance");
-            criarLivro("O calcanhar do Aquiles e outras histórias curiosas da Grécia Antiga", "Duda Teixeira", 1, "Fantasia");
-            criarLivro("13 dos melhores contos de amor da literatura brasileira", "Rosa Amanda Strausz", 1, "Romance");
+            criarLivro("Aída", "Giuseppe Verdi e Antonio Ghislanzoni", 1, "Romance", "Aida.jpg");
+            criarLivro("Grandes amores da mitologia grega", "Dad Squarisi e Linda Goulart", 3, "Romance", "Grandes-amores-da-mitologia-grega.jpg");
+            criarLivro("O calcanhar do Aquiles e outras histórias curiosas da Grécia Antiga", "Duda Teixeira", 1, "Fantasia","O-calcanhar-do-Aquiles-e-outras-histórias-curiosas-d- Grécia.jpeg");
+            criarLivro("13 dos melhores contos de amor da literatura brasileira", "Rosa Amanda Strausz", 1, "Romance", "13-dos-melhores-contos-de-amor-da-literatura-brasileira.jpeg");
 	}
- 
 	// Só cria o livro se ainda não existir um com o mesmo título
-	private void criarLivro(String titulo, String autor, int quantidade, String nomeGenero) {
+	private void criarLivro(String titulo, String autor, int quantidade, String nomeGenero, String arquivoCapa) throws Exception {
 		if (Livro.count("titulo = ?1", titulo) > 0) {
 			return;
 		}
@@ -109,9 +113,13 @@ public class Inicializador extends Job {
 		l.emprestados = 0;
 		l.disponivel = true;
 		l.genero = Genero.find("genero = ?1", nomeGenero).first();
+		if (arquivoCapa != null) {
+			File f = Play.getFile("public/images/capas/" + arquivoCapa);
+			if (f.exists()) {
+				l.capa = new Blob();
+				l.capa.set(new FileInputStream(f), MimeTypes.getMimeType(f.getName()));
+			}
+		}
 		l.save();
 	}
-
-	}
-
-
+}
