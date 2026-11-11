@@ -1,6 +1,7 @@
 package security;
 
 import controllers.Logins;
+import models.Genero;
 import models.Perfil;
 import play.mvc.Before;
 import play.mvc.Controller;
@@ -25,5 +26,10 @@ public class Seguranca extends Controller {
 		if (possuiAnotacao != null && !Perfil.BIBLIOTECARIO.name().equals(perfil)) {
 			forbidden("Acesso restrito à bibliotecária");
 		}
+	}
+	
+	@Before
+	static void carregarGeneros() {
+		renderArgs.put("generosMenu", Genero.findAll());
 	}
 }

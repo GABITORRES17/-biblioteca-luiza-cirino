@@ -1,16 +1,7 @@
-#{extends 'main.html' /} #{set title:'Listagem de Livro' /}
+#{extends 'main.html' /} 
+#{set title:'Listagem de Livro' /}
 
-<ul class="nav nav-pills mb-3">
-	<li class="nav-item"><a
-		class="nav-link ${generoSel == null ? 'active' : ''}"
-		href="@{Livros.listar}">Todos</a></li> #{list items:generos, as:'g'}
-	<li class="nav-item"><a
-		class="nav-link ${generoSel?.id == g.id ? 'active' : ''}"
-		href="@{Livros.GeneroS(g.id)}">${g.genero}</a></li> #{/list}
-</ul>
-<!-- 
-    BARRA DE BUSCA
--->
+<!--BARRA DE BUSCA -->
 <form action="@{Livros.listar}" class="mb-3">
 	<div class="input-group">
 		<span class="input-group-text"><i class="fas fa-search"></i></span> <input

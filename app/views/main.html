@@ -1,12 +1,4 @@
-<!--
-    main.html - Layout principal do sistema de biblioteca
-    Estrutura base estendida por todas as outras páginas.
-    Usa Bootstrap 5 (layout, navbar, cards, alerts) + Font Awesome (ícones).
-
-    Atenção: o Play interpreta os símbolos dólar-chave, hashtag-chave, arroba-chave
-    e porcentagem-chave. Por isso o CSS e o JS abaixo evitam escrever essas
-    sequências coladas.
--->
+<!-- main.html - Layout principal do sistema de biblioteca -->
 <!DOCTYPE html>
 <html lang="pt-BR" data-bs-theme="light">
 <head>
@@ -196,6 +188,38 @@ body.bg-bib {
 	background: var(--bib-azul);
 	color: #fff;
 	font-size: 1.3rem;
+}
+
+/* Ícone do título quando é botão: cursor e efeito ao passar o mouse */
+.page-title .icone-menu {
+	cursor: pointer;
+	transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.page-title .icone-menu:hover {
+	transform: scale(1.08);
+	box-shadow: 0 4px 12px rgba(93, 23, 235, 0.4);
+}
+
+/* Menu lateral de gêneros: mesma cor do fundo da página */
+.offcanvas {
+	background: #a5d0f2; /* igual ao body.bg-bib no modo claro */
+}
+
+[data-bs-theme="dark"] .offcanvas {
+	background: linear-gradient(160deg, #0d1b33 0%, #121c2f 55%, #1d1730 100%) fixed; /* igual ao fundo escuro */
+}
+
+/* Itens da lista transparentes, para o fundo aparecer por trás */
+.offcanvas .list-group {
+	--bs-list-group-bg: transparent;
+	--bs-list-group-border-color: rgba(0, 0, 0, 0.12);
+	--bs-list-group-action-hover-bg: rgba(255, 255, 255, 0.35);
+}
+
+[data-bs-theme="dark"] .offcanvas .list-group {
+	--bs-list-group-border-color: rgba(255, 255, 255, 0.12);
+	--bs-list-group-action-hover-bg: rgba(255, 255, 255, 0.08);
 }
 
 .page-title h1 {
@@ -389,15 +413,56 @@ main > *:nth-child(n+7) { animation-delay: 0.36s; }
 			</div>
 		</div>
 	</nav>
+	</nav>
+
+	<!-- ================= MENU LATERAL DE GÊNEROS ================= -->
+	#{if request.controller == 'Livros'}
+	<div class="offcanvas offcanvas-start" tabindex="-1" id="menuGeneros"
+		aria-labelledby="menuGenerosLabel">
+		<div class="offcanvas-header">
+			<h5 class="offcanvas-title" id="menuGenerosLabel">
+				<i class="fas fa-tags me-2"></i> Gêneros
+			</h5>
+			<button type="button" class="btn-close" data-bs-dismiss="offcanvas"
+				aria-label="Fechar"></button>
+		</div>
+		<div class="offcanvas-body p-0">
+			<div class="list-group list-group-flush">
+				<a href="@{Livros.listar}"
+					class="list-group-item list-group-item-action ${request.action == 'Livros.listar' ? 'active' : ''}">
+					<i class="fas fa-book me-2"></i> Todos
+				</a>
+				#{list items:generosMenu, as:'g'}
+				<a href="@{Livros.GeneroS(g.id)}"
+					class="list-group-item list-group-item-action ${request.action == 'Livros.GeneroS' && params.id == g.id.toString() ? 'active' : ''}">
+					${g.genero}
+				</a>
+				#{/list}
+			</div>
+		</div>
+	</div>
+	#{/if}
+
+	<!-- ================= CONTEÚDO ================= -->
 
 	<!-- ================= CONTEÚDO ================= -->
 	<main class="container flex-grow-1 py-4" style="max-width: 1000px;">
 
-		<!-- Título da página -->
-		<div class="page-title mb-4">
-			<span class="icone"><i class="fas fa-book"></i></span>
-			<h1 class="h3 mb-0">#{get 'title' /}</h1>
-		</div>
+	<!-- Título da página -->
+	<div class="page-title mb-4">
+		#{if request.controller == 'Livros'}
+		<!-- Em Livros, o ícone vira o botão que abre o menu de gêneros -->
+		<button type="button" class="icone icone-menu border-0"
+			data-bs-toggle="offcanvas" data-bs-target="#menuGeneros"
+			aria-controls="menuGeneros" title="Gêneros" aria-label="Abrir menu de gêneros">
+			<i class="fas fa-bars"></i>
+		</button>
+		#{/if}
+		#{else}
+		<span class="icone"><i class="fas fa-book"></i></span>
+		#{/else}
+		<h1 class="h3 mb-0">#{get 'title' /}</h1>
+	</div>
 
 		<!-- Mensagens flash (as de sucesso somem sozinhas depois de alguns segundos) -->
 		#{if flash.success}

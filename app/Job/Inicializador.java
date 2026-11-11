@@ -148,18 +148,7 @@ public class Inicializador extends Job {
             criarLivro("O garoto verde", "Toni Brandão", 2, "Fantasia", "O-garoto-verde.jpg");
             criarLivro("A Grécia: mitos e lendas", "Alain Quesnel / Jean Torton", 2, "Fantasia", "A-Grecia-mitos-e-lendas.jpg");
             criarLivro("Entre deuses e monstros", "Lia Neiva", 75, "Fantasia", "Entre-deuses-e-monstros.jpg");
-            criarLivro("Dragon Age", "Nunzio DeFillipis", 1, "Fantasia", "Dragon-Age.jpg");
-            criarLivro("Domo Mangá", "Tsuneo Goda", 1, "Fantasia", "Domo-Manga.jpg");
-            criarLivro("Delicious in Dungeon", "Ryoko Kui", 1, "Fantasia", "Delicious-in-Dungeon.jpg");
-            criarLivro("Yuyu Hakusho", "Yoshihiro Togashi", 1, "Fantasia", "Yuyu-Hakusho.jpg");
-            criarLivro("Star Wars Rebeldes", "Mitsuru Aoki", 1, "Fantasia", "Star-Wars-Rebeldes.jpg");
-            criarLivro("Santuário dos dinossauros 1", "Itaru Kinoshita", 1, "Fantasia", "Santuário-dos-dinossauros-1.jpg");
-            criarLivro("Hunter x Hunter", "Yoshihiro Togashi", 1, "Fantasia", "Hunter-x-Hunter.jpg");
-            criarLivro("Como conheci a minha alma gêmea", "Anashin", 1, "Fantasia", "Como-conheci-a-minha-alma-gemea.jpg");
-            criarLivro("Naruto", "Masashi Kishimoto", 1, "Fantasia", "Naruto.jpg");
-            criarLivro("Sakura", "Clamp", 1, "Fantasia", "Sakura-Clamp.jpg");
-            criarLivro("Meu casamento feliz", "Akume Agitogi", 1, "Fantasia", "Meu-casamento-feliz.jpg");
-
+            
             // ===== CULTURA=====
             criarLivro("Contos e lendas do Peru", "Antonieta Dias de Moraes", 1, "Cultura", "Contos-e-lendas-do-Peru.jpg");
             criarLivro("Contos árabes para jovens de todos os lugares", "Maria Luísa Soriano Martins", 1, "Cultura", "Contos-arabes-para-jovens.jpg");
@@ -230,8 +219,6 @@ public class Inicializador extends Job {
             criarLivro("Como conheci a minha alma gêmea", "Anashin", 1, "Mangá", "Como-conheci-a-minha-alma-gemea.jpg");
             criarLivro("Naruto", "Masashi Kishimoto", 1, "Mangá", "Naruto.jpg");
             criarLivro("Sakura", "Clamp", 1, "Mangá", "Sakura-Clamp.jpg");
-            criarLivro("Meu casamento feliz", "Akume Agitogi", 1, "Mangá", "Meu-casamento-feliz.jpg");
-            criarLivro("Sakura", "Edição brasileira", 1, "Mangá", "Sakura-Edicao-brasileira.jpg");
             
             // =======QUADRINHOS =========
             criarLivro("Lucíola em graphic novel", "José de Alencar", 1, "Quadrinhos", "Luciola-em-graphic-novel.jpg");
