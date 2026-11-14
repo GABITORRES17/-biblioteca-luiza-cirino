@@ -1,5 +1,51 @@
-#{extends 'main.html' /} 
+#{extends 'main.html' /}
 #{set title:'Listagem de Livro' /}
+
+<!-- Estilos só desta página (grade de livros) -->
+<style>
+/* Capa com proporção fixa (2:3), igual numa estante */
+.book-cover {
+	width: 100%;
+	aspect-ratio: 2 / 3;
+	object-fit: cover;
+	border-top-left-radius: 1rem;
+	border-top-right-radius: 1rem;
+}
+
+/* Quando o livro não tem capa, aparece um bloco colorido no lugar */
+.book-cover-vazia {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: linear-gradient(160deg, #5d17eb, #5ce1e6);
+	color: #fff;
+	font-size: 2.5rem;
+}
+
+/* Título com no máximo 2 linhas e autor com 1, para todos os cards ficarem do mesmo tamanho */
+.book-titulo {
+	font-size: 0.95rem;
+	line-height: 1.25;
+	display: -webkit-box;
+	-webkit-line-clamp: 2;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+	min-height: 2.4em;
+}
+
+.book-autor {
+	font-size: 0.85rem;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+/* Card sobe um pouquinho ao passar o mouse */
+.book-item:hover {
+	transform: translateY(-4px);
+	box-shadow: 0 8px 20px rgba(93, 23, 235, 0.25);
+}
+</style>
 
 <!--BARRA DE BUSCA -->
 <form action="@{Livros.listar}" class="mb-3">
@@ -26,79 +72,110 @@
 </div>
 #{/if}
 
-<!-- 
-    LISTA DE LIVROS
+<!--
+    LISTA DE LIVROS EM GRADE (um do lado do outro)
+    row-cols-2  = 2 por linha no celular
+    row-cols-md-3 = 3 por linha em tablet
+    row-cols-lg-5 = 5 por linha em tela grande
 -->
-#{list items:livros, as:'l'}
+<div class="row row-cols-2 row-cols-md-3 row-cols-lg-5 g-3">
 
-<div class="card card-shadow book-card border-start border-primary border-3 mb-3">
-	<div class="card-body d-flex gap-3">
-		#{if l.capa?.exists()} <img src="@{Livros.capa(l.id)}"
-			alt="Capa de ${l.titulo}"
-			style="width: 90px; height: 130px; object-fit: cover; border-radius: 6px;" />
-		#{/if}
-		<div class="flex-grow-1">
-			<div
-				class="d-flex justify-content-between align-items-start flex-wrap gap-2">
-				<div>
-					<h5 class="card-title mb-1">${l.titulo}</h5>
-					<h6 class="card-subtitle text-muted mb-2">${l.autor}</h6>
+	#{list items:livros, as:'l'}
+	<div class="col">
+		<div class="card card-shadow book-card book-item h-100">
+
+			<!-- CAPA -->
+			#{if l.capa?.exists()}
+			<img src="@{Livros.capa(l.id)}" alt="Capa de ${l.titulo}"
+				class="book-cover" />
+			#{/if}
+			#{else}
+			<div class="book-cover book-cover-vazia">
+				<i class="fas fa-book"></i>
+			</div>
+			#{/else}
+
+			<div class="card-body d-flex flex-column text-center p-2">
+
+				<!-- TÍTULO E AUTOR -->
+				<h5 class="book-titulo card-title mb-1" title="${l.titulo}">${l.titulo}</h5>
+				<h6 class="book-autor card-subtitle text-muted mb-2"
+					title="${l.autor}">${l.autor}</h6>
+
+				<!-- Selo de disponibilidade -->
+				<div class="mb-2">
+					#{if l.disponivel}
+					<span
+						class="badge badge-available bg-success-subtle text-success-emphasis">
+						<i class="fas fa-check-circle me-1"></i> Disponível
+					</span>
+					#{/if}
+					#{else}
+					<span
+						class="badge badge-unavailable bg-danger-subtle text-danger-emphasis">
+						<i class="fas fa-times-circle me-1"></i> Indisponível
+					</span>
+					#{/else}
 				</div>
 
-				<!-- Badge (selo) indicando disponibilidade, com cores diferentes -->
-				#{if l.disponivel} <span
-					class="badge badge-available bg-success-subtle text-success-emphasis">
-					<i class="fas fa-check-circle me-1"></i> Disponível
-				</span> #{/if} #{else} <span
-					class="badge badge-unavailable bg-danger-subtle text-danger-emphasis">
-					<i class="fas fa-times-circle me-1"></i> Não está disponível
-				</span> #{/else}
-			</div>
-
-			#{if session.perfilUsuario == 'BIBLIOTECARIO'}
-			<!-- Ações do livro agrupadas com espaçamento (gap) em vez de "|" -->
-			<div class="d-flex flex-wrap gap-2 mt-3">
-				<a href="@{Livros.editar(l.id)}"
-					class="btn btn-outline-secondary btn-sm"> <i
-					class="fas fa-pen me-1"></i> Editar
+				<!-- BOTÃO DETALHAR (no lugar do "Baixar ou ler online") -->
+				<a href="@{Livros.detalhar(l.id)}"
+					class="btn btn-primary btn-sm w-100 mt-auto"> <i
+					class="fas fa-eye me-1"></i> Detalhar
 				</a>
 
-				<form action="@{Livros.remover(l.id)}" method="post"
-					class="d-inline">
-					<button type="submit" class="btn btn-outline-danger btn-sm">
-						<i class="fas fa-trash me-1"></i> Remover
-					</button>
-				</form>
-				#{/if} <a href="@{Livros.detalhar(l.id)}"
-					class="btn btn-outline-primary btn-sm"> <i
-					class="fas fa-eye me-1"></i> Detalhar
-				</a> #{if session.perfilUsuario == 'BIBLIOTECARIO'} #{if l.disponivel =
-				true}
-				<form action="@{Livros.emprestar(l.id)}" method="post"
-					class="d-inline">
-					<button type="submit" class="btn btn-outline-info btn-sm">
-						<i class="fas fa-hand-holding me-1"></i> Emprestar
-					</button>
-				</form>
-				#{/if} #{if l.emprestados > 0}
+				#{if session.perfilUsuario == 'BIBLIOTECARIO'}
+				<!-- Ações da bibliotecária -->
+				<div class="d-flex flex-wrap justify-content-center gap-1 mt-2">
+					<a href="@{Livros.editar(l.id)}"
+						class="btn btn-outline-secondary btn-sm" title="Editar"> <i
+						class="fas fa-pen"></i>
+					</a>
+
+					<form action="@{Livros.remover(l.id)}" method="post"
+						class="d-inline">
+						<button type="submit" class="btn btn-outline-danger btn-sm"
+							title="Remover">
+							<i class="fas fa-trash"></i>
+						</button>
+					</form>
+
+					#{if l.disponivel}
+					<form action="@{Livros.emprestar(l.id)}" method="post"
+						class="d-inline">
+						<button type="submit" class="btn btn-outline-info btn-sm"
+							title="Emprestar">
+							<i class="fas fa-hand-holding"></i>
+						</button>
+					</form>
+					#{/if}
+				</div>
+
+				#{if l.emprestados > 0}
 				<form action="@{Livros.devolver(l.id)}" method="post"
-					class="d-inline-flex align-items-center gap-1">
+					class="d-flex align-items-center justify-content-center gap-1 mt-2">
 					<input type="number" name="q" value="1" min="1"
 						max="${l.emprestados}" class="form-control form-control-sm"
-						style="width: 70px" />
-					<button type="submit" class="btn btn-outline-warning btn-sm">
+						style="width: 55px" />
+					<button type="submit" class="btn btn-outline-warning btn-sm"
+						title="Devolver">
 						<i class="fas fa-undo me-1"></i> Devolver
 					</button>
 				</form>
-				#{/if} #{/if}
+				#{/if}
+				#{/if}
+
 			</div>
 		</div>
 	</div>
-</div>
-
-	#{/list} #{else}
+	#{/list}
+	#{else}
 	<!-- Estado vazio (nenhum livro cadastrado) usando um "alert" informativo -->
-	<div class="alert alert-info text-center" role="alert">
-		<i class="fas fa-info-circle me-2"></i> Nenhum livro cadastrado.
+	<div class="col-12">
+		<div class="alert alert-info text-center" role="alert">
+			<i class="fas fa-info-circle me-2"></i> Nenhum livro cadastrado.
+		</div>
 	</div>
 	#{/else}
+
+</div>

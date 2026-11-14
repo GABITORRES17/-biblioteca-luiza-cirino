@@ -4,8 +4,10 @@ package models;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 
+import play.data.validation.MaxSize;
 import play.data.validation.Min;
 import play.data.validation.MinSize;
 import play.data.validation.Required;
@@ -25,6 +27,12 @@ public class Livro extends Model{
 	@Required
 	@MinSize(3)
 	public String autor;
+	
+	@Required
+	@MinSize(50)
+	@MaxSize(2000)
+	@Lob
+	public String sinopse;
 
 	@Min(1)
 	public int quantidade;
