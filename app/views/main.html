@@ -118,7 +118,7 @@ body.bg-bib {
 /* Cada item do menu tem um ícone de cor diferente */
 .ic-livros { color: #5ce1e6; }
 .ic-novo { color: #fe914c; }
-.ic-alunos { color: #ff8f8f; }
+.ic-alunos { color: #ffd900; }
 
 .navbar-bib .nav-link i {
 	transition: transform 0.2s ease;
@@ -368,7 +368,19 @@ main > *:nth-child(n+7) { animation-delay: 0.36s; }
 					<li class="nav-item"><a
 						class="nav-link ${request.controller == 'Cadastros' ? 'active' : ''}"
 						href="@{Cadastros.listar()}"><i class="fas fa-users me-1 ic-alunos"></i> Alunos</a></li>
+					<li class="nav-item"><a
+						class="nav-link ${request.controller == 'Reservas' ? 'active' : ''}"
+						href="@{Reservas.listar()}"><i class="fas fa-bell me-1 ic-reservas"></i> Reservas
+						#{if models.Reserva.novas() > 0}
+						<span class="badge rounded-pill bg-danger ms-1">${models.Reserva.novas()}</span>
+						#{/if}
+					</a></li>
 					#{/if}
+					#{else}
+					<li class="nav-item"><a
+						class="nav-link ${request.controller == 'Reservas' ? 'active' : ''}"
+						href="@{Reservas.minhasRes()}"><i class="fas fa-bookmark me-1 ic-reservas"></i> Minhas reservas</a></li>
+					#{/else}
 					#{/if}
 				</ul>
 

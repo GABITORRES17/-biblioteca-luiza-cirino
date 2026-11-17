@@ -107,7 +107,7 @@ public class Inicializador extends Job {
        
             if (Cadastro.count() == 0) {
                 Cadastro gabi = new Cadastro();
-                gabi.nome = "gabi";
+                gabi.nome = "GABI";
                 gabi.senha = "1234";
                 gabi.save();
 
