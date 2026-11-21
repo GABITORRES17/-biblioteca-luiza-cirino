@@ -125,7 +125,7 @@ public class Inicializador extends Job {
             		+ "Radamés, capitão da guarda é o alvo da disputa. De um lado, está Amnesis, filha do faraó, e, do outro, Aída, princesa etíope feita escrava pelos egípcios e por quem Radamés também se apaixona. Aída terá de escolher entre viver seu grande amor com o líder inimigo e se manter fiel a seu pai e sua nação. Uma história de amor e coragem de uma escrava capaz de mudar o destino de dois povos.");
             criarLivro("Grandes amores da mitologia grega", "Dad Squarisi e Linda Goulart", 3, "Romance", "Grandes-amores-da-mitologia-grega.jpg","");
             criarLivro("13 dos melhores contos de amor da literatura brasileira", "Rosa Amanda Strausz", 1, "Romance", "13-dos-melhores-contos-de-amor-da-literatura-brasileira.jpeg","");
-            criarLivro("A ladeira da saudade", "Ganymédes José", 1, "Romance", "A-ladeira-da-saudade.jpg","");
+            criarLivro("A ladeira da saudade", "Ganymédes José", 1, "Romance", "A-ladeira-da-saudade.jpg","Uma história que aborda sentimentos, descobertas e experiências da juventude, acompanhando personagens que precisam lidar com suas emoções, relações e desafios pessoais.");
             criarLivro("A descoberta do amor em versos", "Coletânea Literatura em minha casa", 1, "Romance", "A-descoberta-do-amor-em-versos.jpg","");
             criarLivro("Eros e Psique", "Luís Dill", 1, "Romance", "Eros-e-Psique.jpg","");
             criarLivro("O dia em que minha vida mudou por causa de um chocolate comprado nas Ilhas Maldivas", "Keka Reis", 1, "Romance", "O-dia-em-que-minha-vida-mudou.jpg","");
@@ -134,10 +134,10 @@ public class Inicializador extends Job {
             criarLivro("Fedegunda", "Karen Acioly", 1, "Romance", "Fedegunda.jpg","");
             criarLivro("Anita Garibaldi a estrela da tempestade", "Heloisa Prieto", 1, "Romance", "Anita-Garibaldi-a-estrela-da-tempestade.jpg","");
             criarLivro("Os amores de Perseu, Dânae e Andrômeda", "Carlos Alberto de Carvalho", 1, "Romance", "Os-amores-de-Perseu.jpg","");
-            criarLivro("Diário de um apaixonado: sintomas de um bem incurável", "Fabrício Carpinejar", 1, "Romance", "Diario-de-um-apaixonado.jpg","");
+            criarLivro("Diário de um apaixonado: sintomas de um bem incurável", "Fabrício Carpinejar", 1, "Romance", "Diario-de-um-apaixonado.jpg","Uma coletânea de reflexões sobre o amor, seus encantos, dúvidas e contradições. Com sensibilidade e humor, a obra apresenta diferentes situações e sentimentos vividos por quem está apaixonado.");
             criarLivro("O príncipe atrasado: uma paródia teatral de contos de fadas", "Cássia Leslie e Ricardo Dalai", 1, "Romance", "O-principe-atrasado.jpg","");
             criarLivro("Lucíola em graphic novel", "José de Alencar", 1, "Romance", "Luciola-em-graphic-novel.jpg","");
-            criarLivro("A culpa é das estrelas", "John Green", 1, "Romance", "A-culpa-e-das-estrelas.jpg","");
+            criarLivro("A culpa é das estrelas", "John Green", 1, "Romance", "A-culpa-e-das-estrelas.jpg","Hazel Grace e Augustus Waters se conhecem em um grupo de apoio para jovens com câncer. A partir desse encontro, desenvolvem uma amizade que se transforma em amor. Juntos, enfrentam desafios, descobertas e reflexões sobre a vida, o tempo e os sentimentos.");
             criarLivro("É assim que começa", "Colleen Hoover", 1, "Romance", "E-assim-que-comeca.jpg","");
             criarLivro("A hipótese de Eros", "Emmanuelle Arsan", 1, "Romance", "A-hipotese-de-Eros.jpg","");
             criarLivro("A felicidade conjugal", "Dr. Haroldo Shryock", 1, "Romance", "A-felicidade-conjugal.jpg","");

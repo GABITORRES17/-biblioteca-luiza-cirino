@@ -147,30 +147,7 @@
 							<i class="fas fa-trash"></i>
 						</button>
 					</form>
-
-					#{if l.disponivel}
-					<form action="@{Livros.emprestar(l.id)}" method="post"
-						class="d-inline">
-						<button type="submit" class="btn btn-outline-info btn-sm"
-							title="Emprestar">
-							<i class="fas fa-hand-holding"></i>
-						</button>
-					</form>
-					#{/if}
 				</div>
-
-				#{if l.emprestados > 0}
-				<form action="@{Livros.devolver(l.id)}" method="post"
-					class="d-flex align-items-center justify-content-center gap-1 mt-2">
-					<input type="number" name="q" value="1" min="1"
-						max="${l.emprestados}" class="form-control form-control-sm"
-						style="width: 55px" />
-					<button type="submit" class="btn btn-outline-warning btn-sm"
-						title="Devolver">
-						<i class="fas fa-undo me-1"></i> Devolver
-					</button>
-				</form>
-				#{/if}
 				#{/if}
 
 			</div>

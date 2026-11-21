@@ -91,4 +91,29 @@ public class Cadastros extends Controller{
 		flash.success("Aluno(a) removido com sucesso!");
 		listar(null);
 	}
+	
+	// Perfil do aluno: dados, empréstimos (abertos e devolvidos) e reservas
+	public static void detalhar(Long id) {
+		Cadastro aluno = Cadastro.findById(id);
+		notFoundIfNull(aluno);
+
+		// Aluno só pode ver o próprio histórico; a bibliotecária vê o de qualquer um
+		boolean bibliotecaria = Perfil.BIBLIOTECARIO.name().equals(session.get("perfilUsuario"));
+		if (!bibliotecaria && !aluno.nome.equals(session.get("usuarioLogado").toUpperCase())) {
+			forbidden("Você só pode ver o seu próprio histórico.");
+		}
+
+		List<models.Emprestimo> emprestimos = models.Emprestimo
+				.find("aluno = ?1 order by dataEmprestimo desc, id desc", aluno).fetch();
+		List<models.Reserva> reservas = models.Reserva
+				.find("aluno = ?1 order by dataRes desc", aluno).fetch();
+		render(aluno, emprestimos, reservas);
+	}
+
+	// Atalho para o aluno abrir o próprio histórico
+	public static void meuHistorico() {
+		Cadastro aluno = Cadastro.find("nome = ?1", session.get("usuarioLogado").toUpperCase()).first();
+		notFoundIfNull(aluno);
+		detalhar(aluno.id);
+	}
 }

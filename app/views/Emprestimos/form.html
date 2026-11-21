@@ -1,0 +1,105 @@
+#{extends 'main.html' /}
+#{set title:'Empréstimo' /}
+
+<form action="@{Emprestimos.salvar()}" method="post" class="card card-shadow p-4" id="formEmprestimo">
+
+	<input type="hidden" name="id" value="${e.id}" />
+	<input type="hidden" name="alunoId" id="alunoId" value="${e.aluno?.id}" />
+	<input type="hidden" name="livroId" id="livroId" value="${e.livro?.id}" />
+
+	<!-- ALUNO: digite e as opções aparecem -->
+	<div class="mb-3">
+		<label class="form-label">Aluno(a)</label>
+		<input type="text" id="alunoBusca" list="listaAlunos" class="form-control"
+			placeholder="Digite o nome do aluno..." autocomplete="off"
+			value="${e.aluno?.nome}" required />
+		<datalist id="listaAlunos">
+			#{list items:alunos, as:'a'}
+			<option value="${a.nome}" data-id="${a.id}"></option>
+			#{/list}
+		</datalist>
+	</div>
+
+	<!-- LIVRO: digite e as opções aparecem -->
+	<div class="mb-3">
+		<label class="form-label">Livro</label>
+		<input type="text" id="livroBusca" list="listaLivros" class="form-control"
+			placeholder="Digite o título do livro..." autocomplete="off"
+			value="${e.livro?.titulo}" required />
+		<datalist id="listaLivros">
+			#{list items:livros, as:'l'}
+			<option value="${l.titulo}" data-id="${l.id}"></option>
+			#{/list}
+		</datalist>
+	</div>
+
+	<div class="mb-3">
+		<label class="form-label">Data em que pegou</label>
+		<input type="date" name="dataEmprestimo"
+			value="${e.dataEmprestimo?.format('yyyy-MM-dd')}" class="form-control" required />
+	</div>
+
+	<div class="mb-3">
+		<label class="form-label">Data em que devolveu</label>
+		<input type="date" name="dataDevolucao"
+			value="${e.dataDevolucao?.format('yyyy-MM-dd')}" class="form-control" />
+		<div class="form-text">Deixe em branco se ainda não devolveu.</div>
+	</div>
+
+	<div>
+		<button type="submit" class="btn btn-success">
+			<i class="fas fa-save me-1"></i> Salvar
+		</button>
+	</div>
+</form>
+
+<div class="mt-3">
+	<a href="@{Emprestimos.listar()}" class="btn btn-outline-primary"> <i
+		class="fas fa-arrow-left me-1"></i> Retornar
+	</a>
+</div>
+
+<script>
+// Liga o que foi digitado ao número (id) escondido
+function ligarBusca(campoId, listaId, hiddenId) {
+	var campo = document.getElementById(campoId);
+	var hidden = document.getElementById(hiddenId);
+	var opcoes = document.getElementById(listaId).options;
+
+	function atualizar() {
+		hidden.value = '';
+		var texto = campo.value.trim().toLowerCase();
+		for (var i = 0; i < opcoes.length; i++) {
+			if (opcoes[i].value.toLowerCase() === texto) {
+				hidden.value = opcoes[i].getAttribute('data-id');
+				break;
+			}
+		}
+		campo.setCustomValidity('');
+	}
+	campo.addEventListener('input', atualizar);
+	campo.addEventListener('change', atualizar);
+}
+ligarBusca('alunoBusca', 'listaAlunos', 'alunoId');
+ligarBusca('livroBusca', 'listaLivros', 'livroId');
+
+// Antes de enviar, avisa se o aluno ou o livro não foi escolhido na lista
+document.getElementById('formEmprestimo').addEventListener('submit', function (ev) {
+	var ok = true;
+	var itens = [['alunoBusca', 'alunoId', 'Escolha um aluno da lista.'],
+	             ['livroBusca', 'livroId', 'Escolha um livro da lista.']];
+	for (var i = 0; i < itens.length; i++) {
+		var campo = document.getElementById(itens[i][0]);
+		if (!document.getElementById(itens[i][1]).value) {
+			campo.setCustomValidity(itens[i][2]);
+			ok = false;
+		} else {
+			campo.setCustomValidity('');
+		}
+	}
+	if (!ok) {
+		ev.preventDefault();
+		this.reportValidity();
+	}
+});
+</script>

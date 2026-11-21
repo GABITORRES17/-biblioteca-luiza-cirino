@@ -3,6 +3,7 @@ package controllers;
 import java.util.List;
 
 import models.Cadastro;
+import models.Emprestimo;
 import models.Livro;
 import models.Perfil;
 import models.Reserva;
@@ -133,9 +134,12 @@ public class Reservas extends Controller {
 			listar();
 		}
 
-		l.emprestados++;
-		l.disponivel = l.emprestados < l.quantidade;
-		l.save();
+		Emprestimo emp = new Emprestimo();
+		emp.aluno = r.aluno;
+		emp.livro = l;
+		emp.dataEmprestimo = new java.util.Date();
+		emp.save();
+		Emprestimo.recalcular(l);
 
 		r.status = StatusRes.ATENDIDA;
 		r.lida = true;

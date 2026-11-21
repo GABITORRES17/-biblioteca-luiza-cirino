@@ -1,0 +1,54 @@
+#{extends 'main.html' /}
+#{set title:'Empréstimos em aberto' /}
+
+#{if session.perfilUsuario == 'BIBLIOTECARIO'}
+<div class="d-flex justify-content-end mb-3">
+	<a href="@{Emprestimos.form()}" class="btn btn-success"> <i
+		class="fas fa-plus me-1"></i> Novo empréstimo
+	</a>
+</div>
+#{/if}
+
+#{if emprestimos}
+<div class="card card-shadow">
+	<div class="table-responsive">
+		<table class="table table-hover align-middle mb-0">
+			<thead>
+				<tr>
+					<th>Aluno</th>
+					<th>Livro</th>
+					<th>Pegou em</th>
+					#{if session.perfilUsuario == 'BIBLIOTECARIO'}<th class="text-end">Ações</th>#{/if}
+				</tr>
+			</thead>
+			<tbody>
+				#{list items:emprestimos, as:'e'}
+				<tr>
+					<td>${e.aluno.nome}</td>
+					<td>${e.livro.titulo}</td>
+					<td>${e.dataEmprestimo.format('dd/MM/yyyy')}</td>
+					#{if session.perfilUsuario == 'BIBLIOTECARIO'}
+					<td class="text-end text-nowrap">
+						<a href="@{Emprestimos.form(e.id)}"
+							class="btn btn-outline-secondary btn-sm" title="Editar"> <i
+							class="fas fa-pen"></i>
+						</a>
+						<form action="@{Emprestimos.devolver(e.id)}" method="post" class="d-inline">
+							<button type="submit" class="btn btn-outline-success btn-sm">
+								<i class="fas fa-undo me-1"></i> Devolver
+							</button>
+						</form>
+					</td>
+					#{/if}
+				</tr>
+				#{/list}
+			</tbody>
+		</table>
+	</div>
+</div>
+#{/if}
+#{else}
+<div class="alert alert-info text-center" role="alert">
+	<i class="fas fa-info-circle me-2"></i> Nenhum empréstimo em aberto.
+</div>
+#{/else}

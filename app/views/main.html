@@ -360,7 +360,11 @@ main > *:nth-child(n+7) { animation-delay: 0.36s; }
 					<li class="nav-item"><a
 						class="nav-link ${request.controller == 'Livros' && request.action != 'Livros.form' ? 'active' : ''}"
 						href="@{Livros.listar()}"><i class="fas fa-book me-1 ic-livros"></i> Livros</a></li>
-
+											#{if session.perfilUsuario == 'BIBLIOTECARIO'}
+					<li class="nav-item"><a
+						class="nav-link ${request.controller == 'Emprestimos' ? 'active' : ''}"
+						href="@{Emprestimos.listar()}"><i class="fas fa-clock-rotate-left me-1 ic-livros"></i> Empréstimos</a></li>
+					#{/if}
 					#{if session.perfilUsuario == 'BIBLIOTECARIO'}
 					<li class="nav-item"><a
 						class="nav-link ${request.action == 'Livros.form' ? 'active' : ''}"
@@ -380,6 +384,9 @@ main > *:nth-child(n+7) { animation-delay: 0.36s; }
 					<li class="nav-item"><a
 						class="nav-link ${request.controller == 'Reservas' ? 'active' : ''}"
 						href="@{Reservas.minhasRes()}"><i class="fas fa-bookmark me-1 ic-reservas"></i> Minhas reservas</a></li>
+											<li class="nav-item"><a
+						class="nav-link ${request.action == 'Cadastros.detalhar' ? 'active' : ''}"
+						href="@{Cadastros.meuHistorico()}"><i class="fas fa-clock-rotate-left me-1 ic-reservas"></i> Meu histórico</a></li>
 					#{/else}
 					#{/if}
 				</ul>
