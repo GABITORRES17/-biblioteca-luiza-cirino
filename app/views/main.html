@@ -360,6 +360,9 @@ main > *:nth-child(n+7) { animation-delay: 0.36s; }
 					<li class="nav-item"><a
 						class="nav-link ${request.controller == 'Livros' && request.action != 'Livros.form' ? 'active' : ''}"
 						href="@{Livros.listar()}"><i class="fas fa-book me-1 ic-livros"></i> Livros</a></li>
+											<li class="nav-item"><a
+						class="nav-link ${request.controller == 'Podio' ? 'active' : ''}"
+						href="@{Podio.listar()}"><i class="fas fa-trophy me-1 ic-reservas"></i> Pódio</a></li>
 											#{if session.perfilUsuario == 'BIBLIOTECARIO'}
 					<li class="nav-item"><a
 						class="nav-link ${request.controller == 'Emprestimos' ? 'active' : ''}"
