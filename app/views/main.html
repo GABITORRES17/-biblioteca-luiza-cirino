@@ -327,6 +327,417 @@ main > *:nth-child(n+7) { animation-delay: 0.36s; }
 }
 
 </style>
+
+<!-- Fontes do tema -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+
+<!-- Tema da Biblioteca Escolar da Luiza -->
+<style>
+/* ---------- Cores e fontes ---------- */
+:root, [data-bs-theme="light"] {
+	--bib-roxo: #5d17eb;
+	--bib-roxo-escuro: #4a0fc4;
+	--bib-ciano: #5ce1e6;
+	--bib-coral: #ff5757;
+	--bib-laranja: #fe914c;
+	--bib-rosa: #fbe5f2;
+	--bib-pessego: #ffefe2;
+	--bib-tinta: #2a1a4a;
+
+	--bs-body-font-family: 'Nunito', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+	--bs-body-color: #2a1a4a;
+	--bs-body-color-rgb: 42, 26, 74;
+	--bs-secondary-color: #6b5b86;
+	--bs-body-bg: #ffefe2;
+	--bs-body-bg-rgb: 255, 239, 226;
+	--bs-tertiary-bg: #fbe5f2;
+	--bs-tertiary-bg-rgb: 251, 229, 242;
+	--bs-border-color: rgba(93, 23, 235, 0.16);
+
+	--bs-primary: #5d17eb;
+	--bs-primary-rgb: 93, 23, 235;
+	--bs-link-color: #5d17eb;
+	--bs-link-color-rgb: 93, 23, 235;
+	--bs-link-hover-color: #4a0fc4;
+
+	/* sucesso = ciano */
+	--bs-success: #5ce1e6;
+	--bs-success-rgb: 92, 225, 230;
+	--bs-success-text-emphasis: #0b6e73;
+	--bs-success-bg-subtle: #d6f7f8;
+	--bs-success-border-subtle: #9ceef1;
+	/* info = ciano também */
+	--bs-info: #5ce1e6;
+	--bs-info-rgb: 92, 225, 230;
+	--bs-info-text-emphasis: #0b6e73;
+	--bs-info-bg-subtle: #d6f7f8;
+	--bs-info-border-subtle: #9ceef1;
+	/* erro = coral */
+	--bs-danger: #ff5757;
+	--bs-danger-rgb: 255, 87, 87;
+	--bs-danger-text-emphasis: #a32020;
+	--bs-danger-bg-subtle: #ffe0e0;
+	--bs-danger-border-subtle: #ffb3b3;
+	/* atenção = laranja */
+	--bs-warning: #fe914c;
+	--bs-warning-rgb: 254, 145, 76;
+	--bs-warning-text-emphasis: #8f3f06;
+	--bs-warning-bg-subtle: #ffe9d9;
+	--bs-warning-border-subtle: #ffcba8;
+}
+
+[data-bs-theme="dark"] {
+	--bs-body-color: #f1ebff;
+	--bs-body-color-rgb: 241, 235, 255;
+	--bs-secondary-color: #b9acd6;
+	--bs-body-bg: #1b1030;
+	--bs-body-bg-rgb: 27, 16, 48;
+	--bs-tertiary-bg: #2a1c47;
+	--bs-tertiary-bg-rgb: 42, 28, 71;
+	--bs-border-color: rgba(255, 255, 255, 0.14);
+
+	--bs-link-color: #b79cff;
+	--bs-link-color-rgb: 183, 156, 255;
+	--bs-link-hover-color: #d2c0ff;
+
+	--bs-success-text-emphasis: #8eeff2;
+	--bs-success-bg-subtle: #0f3f44;
+	--bs-success-border-subtle: #14666c;
+	--bs-info-text-emphasis: #8eeff2;
+	--bs-info-bg-subtle: #0f3f44;
+	--bs-info-border-subtle: #14666c;
+	--bs-danger-text-emphasis: #ff9a9a;
+	--bs-danger-bg-subtle: #4a1d27;
+	--bs-danger-border-subtle: #7a2c36;
+	--bs-warning-text-emphasis: #ffb784;
+	--bs-warning-bg-subtle: #4a2c18;
+	--bs-warning-border-subtle: #7a4824;
+}
+
+/* Fonte arredondada nos títulos, parecida com a das letras da logo */
+h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6, .navbar-brand, .btn {
+	font-family: 'Fredoka', 'Nunito', system-ui, sans-serif;
+	font-weight: 500;
+}
+
+/* ---------- Fundo da página ---------- */
+body.bg-bib,
+[data-bs-theme="dark"] body.bg-bib {
+	background: var(--bs-body-bg);
+}
+
+/* ---------- Menu de cima ---------- */
+.navbar-bib {
+	background: var(--bib-roxo);
+}
+
+.navbar-bib.rolou {
+	box-shadow: 0 2px 8px rgba(42, 26, 74, 0.25) !important;
+}
+
+/* Logo redonda sobre o rosa da própria logo, com uma borda branca fina */
+.navbar-bib .navbar-brand .logo-bib {
+	background: var(--bib-rosa);
+	border: 2px solid #fff;
+}
+
+.navbar-bib .nav-link:hover, .navbar-bib .nav-link:focus {
+	transform: none;
+	background-color: rgba(255, 255, 255, 0.16);
+}
+
+.navbar-bib .nav-link.active {
+	background-color: rgba(255, 255, 255, 0.24);
+	box-shadow: inset 0 -3px 0 var(--bib-ciano);
+}
+
+/* Ícones do menu: todos da mesma cor (antes cada um tinha uma cor) */
+.ic-livros, .ic-novo, .ic-alunos, .ic-reservas {
+	color: inherit;
+}
+
+.navbar-bib .nav-link:hover i {
+	transform: none;
+}
+
+.theme-toggle {
+	color: #fff;
+}
+
+.theme-toggle:hover {
+	transform: none;
+}
+
+.avatar-inicial {
+	background: var(--bib-ciano);
+	color: var(--bib-tinta);
+}
+
+/* ---------- Título da página ---------- */
+.page-title h1,
+[data-bs-theme="dark"] .page-title h1 {
+	background: none;
+	-webkit-background-clip: border-box;
+	background-clip: border-box;
+	-webkit-text-fill-color: currentColor;
+	color: var(--bs-body-color);
+	font-weight: 600;
+}
+
+.page-title .icone {
+	background: var(--bib-roxo);
+	border-radius: 0.75rem;
+}
+
+.page-title .icone-menu:hover {
+	transform: none;
+	box-shadow: none;
+	background: var(--bib-roxo-escuro);
+}
+
+/* ---------- Cartões ---------- */
+.card {
+	--bs-card-bg: #fff;
+	--bs-card-border-color: rgba(93, 23, 235, 0.14);
+}
+
+[data-bs-theme="dark"] .card {
+	--bs-card-bg: #2a1c47;
+	--bs-card-border-color: rgba(255, 255, 255, 0.12);
+}
+
+.card-shadow {
+	border: 1px solid var(--bs-card-border-color);
+	border-radius: 0.75rem;
+	box-shadow: none;
+}
+
+[data-bs-theme="dark"] .book-card {
+	background: var(--bs-card-bg);
+	border-left-color: var(--bib-roxo);
+}
+
+/* Lista de livros: sem "pulinho"; só a borda fica roxa ao passar o mouse */
+.card.book-item:hover {
+	transform: none;
+	box-shadow: none;
+	border-color: var(--bib-roxo);
+}
+
+img.book-cover {
+	border-radius: 0.7rem 0.7rem 0 0;
+}
+
+/* Livro sem capa: rosa da logo com o ícone em roxo (antes era um degradê) */
+.book-cover.book-cover-vazia {
+	background: var(--bib-rosa);
+	color: var(--bib-roxo);
+}
+
+/* ---------- Botões ---------- */
+.btn:hover {
+	transform: none;
+	box-shadow: none;
+}
+
+.btn-primary {
+	background: var(--bib-roxo);
+	color: #fff;
+}
+
+.btn-primary:hover, .btn-primary:focus, .btn-primary:active {
+	background: var(--bib-roxo-escuro) !important;
+	color: #fff !important;
+}
+
+.btn-success {
+	background: var(--bib-ciano);
+	color: var(--bib-tinta);
+}
+
+.btn-success:hover, .btn-success:focus, .btn-success:active {
+	background: #3ccfd5 !important;
+	color: var(--bib-tinta) !important;
+}
+
+.btn-outline-primary {
+	--bs-btn-color: var(--bib-roxo);
+	--bs-btn-border-color: var(--bib-roxo);
+	--bs-btn-hover-bg: var(--bib-roxo);
+	--bs-btn-hover-border-color: var(--bib-roxo);
+	--bs-btn-hover-color: #fff;
+	--bs-btn-active-bg: var(--bib-roxo-escuro);
+	--bs-btn-active-border-color: var(--bib-roxo-escuro);
+	--bs-btn-active-color: #fff;
+}
+
+[data-bs-theme="dark"] .btn-outline-primary {
+	--bs-btn-color: #b79cff;
+	--bs-btn-border-color: #b79cff;
+	--bs-btn-hover-bg: #b79cff;
+	--bs-btn-hover-border-color: #b79cff;
+	--bs-btn-hover-color: var(--bib-tinta);
+}
+
+.btn-outline-success, .btn-outline-info {
+	--bs-btn-color: #0b6e73;
+	--bs-btn-border-color: var(--bib-ciano);
+	--bs-btn-hover-bg: var(--bib-ciano);
+	--bs-btn-hover-border-color: var(--bib-ciano);
+	--bs-btn-hover-color: var(--bib-tinta);
+	--bs-btn-active-bg: #3ccfd5;
+	--bs-btn-active-border-color: #3ccfd5;
+	--bs-btn-active-color: var(--bib-tinta);
+}
+
+.btn-outline-danger {
+	--bs-btn-color: #c92f2f;
+	--bs-btn-border-color: var(--bib-coral);
+	--bs-btn-hover-bg: var(--bib-coral);
+	--bs-btn-hover-border-color: var(--bib-coral);
+	--bs-btn-hover-color: var(--bib-tinta);
+	--bs-btn-active-bg: #f04343;
+	--bs-btn-active-border-color: #f04343;
+	--bs-btn-active-color: var(--bib-tinta);
+}
+
+.btn-outline-warning {
+	--bs-btn-color: #a84a08;
+	--bs-btn-border-color: var(--bib-laranja);
+	--bs-btn-hover-bg: var(--bib-laranja);
+	--bs-btn-hover-border-color: var(--bib-laranja);
+	--bs-btn-hover-color: var(--bib-tinta);
+	--bs-btn-active-bg: #f27f33;
+	--bs-btn-active-border-color: #f27f33;
+	--bs-btn-active-color: var(--bib-tinta);
+}
+
+.btn-outline-secondary {
+	--bs-btn-color: #5a4a78;
+	--bs-btn-border-color: rgba(90, 74, 120, 0.45);
+	--bs-btn-hover-bg: #5a4a78;
+	--bs-btn-hover-border-color: #5a4a78;
+	--bs-btn-hover-color: #fff;
+}
+
+[data-bs-theme="dark"] .btn-outline-success, [data-bs-theme="dark"] .btn-outline-info {
+	--bs-btn-color: #8eeff2;
+}
+
+[data-bs-theme="dark"] .btn-outline-danger {
+	--bs-btn-color: #ff9a9a;
+}
+
+[data-bs-theme="dark"] .btn-outline-warning {
+	--bs-btn-color: #ffb784;
+}
+
+[data-bs-theme="dark"] .btn-outline-secondary {
+	--bs-btn-color: #c9bde3;
+	--bs-btn-border-color: rgba(201, 189, 227, 0.45);
+	--bs-btn-hover-bg: #c9bde3;
+	--bs-btn-hover-border-color: #c9bde3;
+	--bs-btn-hover-color: var(--bib-tinta);
+}
+
+/* ---------- Campos de formulário ---------- */
+.form-control, .form-select {
+	background-color: #fff;
+	border-color: rgba(93, 23, 235, 0.25);
+}
+
+[data-bs-theme="dark"] .form-control, [data-bs-theme="dark"] .form-select {
+	background-color: #1b1030;
+	border-color: rgba(255, 255, 255, 0.2);
+}
+
+.form-control:focus, .form-select:focus {
+	border-color: var(--bib-roxo);
+	box-shadow: 0 0 0 0.2rem rgba(93, 23, 235, 0.2);
+}
+
+.input-group-text {
+	background-color: var(--bib-rosa);
+	border-color: rgba(93, 23, 235, 0.25);
+	color: var(--bib-roxo);
+}
+
+[data-bs-theme="dark"] .input-group-text {
+	background-color: #2a1c47;
+	border-color: rgba(255, 255, 255, 0.2);
+	color: #b79cff;
+}
+
+/* ---------- Avisos ---------- */
+.alert {
+	border-radius: 0.6rem;
+	border-width: 0 0 0 5px;
+}
+
+.alert-success { border-left-color: var(--bib-ciano); }
+.alert-danger  { border-left-color: var(--bib-coral); }
+.alert-warning { border-left-color: var(--bib-laranja); }
+.alert-info    { border-left-color: var(--bib-roxo); }
+
+/* ---------- Tabelas (empréstimos, reservas, histórico) ---------- */
+.table thead th {
+	background-color: var(--bib-rosa);
+	color: var(--bib-tinta);
+	border-bottom: 0;
+	font-family: 'Fredoka', 'Nunito', system-ui, sans-serif;
+	font-weight: 500;
+}
+
+[data-bs-theme="dark"] .table thead th {
+	background-color: #382659;
+	color: #f1ebff;
+}
+
+.table-responsive {
+	border-radius: 0.75rem;
+}
+
+/* ---------- Menu lateral de gêneros ---------- */
+.offcanvas,
+[data-bs-theme="dark"] .offcanvas {
+	background: var(--bs-body-bg);
+}
+
+.offcanvas .list-group {
+	--bs-list-group-action-hover-bg: var(--bib-rosa);
+	--bs-list-group-border-color: rgba(93, 23, 235, 0.12);
+}
+
+[data-bs-theme="dark"] .offcanvas .list-group {
+	--bs-list-group-action-hover-bg: #2a1c47;
+	--bs-list-group-border-color: rgba(255, 255, 255, 0.12);
+}
+
+.list-group-item.active {
+	background-color: var(--bib-roxo);
+	border-color: var(--bib-roxo);
+	color: #fff;
+}
+
+/* ---------- Rodapé ---------- */
+.rodape {
+	background: #fff !important;
+	border-top: 1px solid rgba(93, 23, 235, 0.14);
+}
+
+[data-bs-theme="dark"] .rodape {
+	background: #2a1c47 !important;
+	border-top-color: rgba(255, 255, 255, 0.12);
+}
+
+/* ---------- Sem animações de entrada (visual mais calmo) ---------- */
+main > * {
+	animation: none !important;
+}
+</style>
+</head>
 </head>
 
 <!-- Coluna ocupando a altura toda: o rodapé fica sempre embaixo da tela -->
@@ -341,7 +752,7 @@ main > *:nth-child(n+7) { animation-delay: 0.36s; }
 			<a class="navbar-brand d-flex align-items-center gap-2 fw-bold"
 				#{if session.usuarioLogado}href="@{Livros.listar()}"#{/if}
 				#{else}href="@{Logins.form()}"#{/else}>
-				<img src="@{'/public/images/logo.png'}" alt="Biblioteca Escolar da Luiza" class="logo-bib">
+				<img src="@{'/public/images/logo-biblioteca.png'}" alt="Biblioteca Escolar da Luiza" class="logo-bib">
 			</a>
 
 			<!-- Botão hambúrguer (telas pequenas) -->

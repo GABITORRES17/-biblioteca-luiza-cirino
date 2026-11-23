@@ -479,7 +479,7 @@ public class Inicializador extends Job {
             //==== CIÊNCIAS =====
             
             criarLivro("Ensinar Ciência da Natureza por meio de projetos de projetos", "Lízia Porto / Amélia Porto", 1, "Ciências", "Ensinar-Ciencia-da-Natureza-por-meio-de-projetos-de-projetos.jpg", "");
-            criarLivro("Astronáutica", "MEC", 1, "Ciências", "Astronautica-MEC.jpg", "");
+            criarLivro("Astronáutica", "MEC", 1, "Ciências", "Astronautica-MEC.png", "");
             criarLivro("Poluição do ar", "Samuel Murgel Branco", 1, "Ciências", "Poluicao-do-ar.jpg", "");
             criarLivro("Manual do defensor do planeta", "João Alegria / Rodrigo Medeiros", 1, "Ciências", "Manual-do-defensor-do-planeta.jpg", "");
             criarLivro("Meio ambiente", "Caroline Rauch", 1, "Ciências", "Meio-ambiente.jpg", "");
