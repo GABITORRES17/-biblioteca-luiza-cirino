@@ -110,16 +110,50 @@ document.addEventListener('DOMContentLoaded', function () {
 		var doc = new DOMParser().parseFromString(t, 'text/html');
 		return (doc.body.textContent || '').trim();
 	}
-
-	// Copia os dados do livro escolhido para os campos do formulário
+	// A Open Library só traz a sinopse numa segunda consulta, feita ao clicar no livro
 	function preencher(info) {
+		// Wikipédia: o resumo do artigo vira a sinopse
+		if (info.wikiTitulo && !info.description) {
+			aviso.textContent = 'Buscando o resumo...';
+			fetch('https://pt.wikipedia.org/api/rest_v1/page/summary/' + encodeURIComponent(info.wikiTitulo))
+				.then(function (resposta) { return resposta.json(); })
+				.then(function (pagina) {
+					info.description = pagina.extract || '';
+					info.title = (pagina.title || info.title).replace(/\s*\(.*?\)\s*$/, ''); // tira "(livro)" do fim
+					aplicar(info);
+				})
+				.catch(function () {
+					aplicar(info);
+				});
+			return;
+		}
+		if (info.workKey && !info.description) {
+			aviso.textContent = 'Buscando a sinopse...';
+			fetch('https://openlibrary.org' + info.workKey + '.json')
+				.then(function (resposta) { return resposta.json(); })
+				.then(function (obra) {
+					var d = obra.description;
+					if (d && d.value) { d = d.value; }
+					info.description = d || '';
+					aplicar(info);
+				})
+				.catch(function () {
+					info.description = '';
+					aplicar(info);
+				});
+		} else {
+			aplicar(info);
+		}
+	}
+	// Copia os dados do livro escolhido para os campos do formulário
+	function aplicar(info) {
 		var titulo = info.title || '';
 		if (info.subtitle) { titulo += ': ' + info.subtitle; }
 		var autor = (info.authors || []).join(', ');
 		var sinopse = limparHtml(info.description).slice(0, 2000);
 
 		if (pegar('titulo')) { pegar('titulo').value = titulo; }
-		if (pegar('autor')) { pegar('autor').value = autor; }
+		if (pegar('autor') && autor) { pegar('autor').value = autor; }
 		if (pegar('sinopse')) { pegar('sinopse').value = sinopse; }
 
 		lista.innerHTML = '';
@@ -155,7 +189,8 @@ document.addEventListener('DOMContentLoaded', function () {
 			nome.textContent = info.title || '(sem título)';
 			var por = document.createElement('div');
 			por.className = 'small text-body-secondary';
-			por.textContent = (info.authors || []).join(', ');
+			var autores = (info.authors || []).join(', ');
+			por.textContent = (autores ? autores + ' · ' : '') + (info.fonte || '');
 			texto.appendChild(nome);
 			texto.appendChild(por);
 			botaoItem.appendChild(texto);
@@ -165,40 +200,170 @@ document.addEventListener('DOMContentLoaded', function () {
 		});
 	}
 
-	// Pergunta ao Google Livros, em segundo plano (AJAX)
+	// Fonte 1: Google Livros (pt = true traz só livros em português)
+	function buscarGoogle(consulta, pt) {
+		var endereco = 'https://www.googleapis.com/books/v1/volumes?q=' + encodeURIComponent(consulta)
+				+ '&maxResults=5&printType=books' + (pt ? '&langRestrict=pt' : '');
+		return fetch(endereco)
+			.then(function (resposta) {
+				if (!resposta.ok) { throw new Error('Google: erro ' + resposta.status); }
+				return resposta.json();
+			})
+			.then(function (dados) { return dados.items || []; });
+	}
+
+	// Fonte 2: Open Library (reserva). Converte para o mesmo formato do Google.
+	function buscarOpenLibrary(consulta, pt) {
+		var endereco = 'https://openlibrary.org/search.json?q=' + encodeURIComponent(consulta)
+				+ '&limit=5&fields=key,title,author_name,cover_i' + (pt ? '&language=por' : '');
+		return fetch(endereco)
+			.then(function (resposta) {
+				if (!resposta.ok) { throw new Error('Open Library: erro ' + resposta.status); }
+				return resposta.json();
+			})
+			.then(function (dados) {
+				return (dados.docs || []).map(function (d) {
+					return {
+						volumeInfo: {
+							title: d.title,
+							authors: d.author_name || [],
+							imageLinks: d.cover_i ? { thumbnail: 'https://covers.openlibrary.org/b/id/' + d.cover_i + '-S.jpg' } : null,
+							workKey: d.key
+						}
+					};
+				});
+			});
+	}
+	// Fonte 4: Wikipédia em português (só por título). Traz o resumo em português.
+	function buscarWikipedia(texto) {
+		var endereco = 'https://pt.wikipedia.org/w/api.php?action=query&list=search&srsearch='
+				+ encodeURIComponent(texto + ' livro') + '&srlimit=5&format=json&origin=*';
+		return fetch(endereco)
+			.then(function (resposta) {
+				if (!resposta.ok) { throw new Error('Wikipédia: erro ' + resposta.status); }
+				return resposta.json();
+			})
+			.then(function (dados) {
+				var achados = (dados.query && dados.query.search) || [];
+				return achados.map(function (a) {
+					return {
+						volumeInfo: {
+							title: a.title.replace(/\s*\(.*?\)\s*$/, ''),
+							authors: [],
+							fonte: 'Wikipédia (confira o autor)',
+							wikiTitulo: a.title
+						}
+					};
+				});
+			});
+	}
+
+	// Tenta o Google e, se falhar ou vier vazio, a Open Library (no idioma pedido)
+	function tentar(consulta, pt) {
+		return buscarGoogle(consulta, pt)
+			.catch(function (erro) {
+				console.warn('Google falhou:', erro);
+				return [];
+			})
+			.then(function (itens) {
+				if (itens.length > 0) { return itens; }
+				return buscarOpenLibrary(consulta, pt).catch(function (erro) {
+					console.warn('Open Library falhou:', erro);
+					return [];
+				});
+			});
+	}
+	// Roda uma busca, marca de onde vieram os resultados e nunca derruba as outras
+	function comRotulo(promessa, rotulo) {
+		return promessa
+			.catch(function (erro) {
+				console.warn(rotulo + ' falhou:', erro);
+				return [];
+			})
+			.then(function (itens) {
+				itens.forEach(function (item) { item.volumeInfo.fonte = rotulo; });
+				return itens;
+			});
+	}
 	function buscar() {
 		var texto = campo.value.trim();
 		if (texto === '') { return; }
 
-		// Se for só número com 10 ou 13 dígitos, é um ISBN
 		var numeros = texto.replace(/[-\s]/g, '');
-		var consulta = /^\d{10}(\d{3})?$/.test(numeros) ? 'isbn:' + numeros : texto;
-		var endereco = 'https://www.googleapis.com/books/v1/volumes?q=' + encodeURIComponent(consulta) + '&maxResults=5&printType=books';
+		var ehIsbn = /^\d{10}(\d{3})?$/.test(numeros);
+		var consulta = ehIsbn ? 'isbn:' + numeros : texto;
 
-		aviso.textContent = 'Buscando...';
+		aviso.textContent = 'Buscando em várias fontes...';
 		lista.innerHTML = '';
 
-		fetch(endereco)
-			.then(function (resposta) {
-				if (!resposta.ok) {
-					throw new Error('O Google respondeu com erro ' + resposta.status);
-				}
-				return resposta.json();
-			})
-			.then(function (dados) {
-				console.log('Resposta do Google Livros:', dados);
-				if (!dados.items || dados.items.length === 0) {
-					aviso.textContent = 'Nenhum livro encontrado para "' + texto + '". Tente só o título ou outro termo.';
+		// Todas as buscas rodam ao mesmo tempo; a ordem da lista é a ordem daqui
+		var buscas;
+		if (ehIsbn) {
+			buscas = [
+				comRotulo(buscarBrasilApi(numeros), 'BrasilAPI'),
+				comRotulo(buscarGoogle(consulta, false), 'Google Livros'),
+				comRotulo(buscarOpenLibrary(consulta, false), 'Open Library')
+			];
+		} else {
+			buscas = [
+				comRotulo(buscarGoogle(consulta, true), 'Google Livros (português)'),
+				comRotulo(buscarOpenLibrary(consulta, true), 'Open Library (português)'),
+				comRotulo(buscarWikipedia(texto), 'Wikipédia (resumo em português, sem autor)'),
+				comRotulo(buscarGoogle(consulta, false), 'Google Livros'),
+				comRotulo(buscarOpenLibrary(consulta, false), 'Open Library')
+			];
+		}
+
+		Promise.all(buscas)
+			.then(function (grupos) {
+				var vistos = {};
+				var todos = [];
+				grupos.forEach(function (grupo) {
+					// no máximo 3 de cada fonte, para a lista não ficar enorme
+					grupo.slice(0, 3).forEach(function (item) {
+						var info = item.volumeInfo || {};
+						var chave = (info.title || '').toLowerCase().trim() + '|' + ((info.authors || [])[0] || '').toLowerCase();
+						if (vistos[chave]) { return; } // já apareceu em outra fonte
+						vistos[chave] = true;
+						todos.push(item);
+					});
+				});
+
+				if (todos.length === 0) {
+					aviso.textContent = 'Nenhum livro encontrado para "' + texto + '". Tente só o título ou preencha à mão.';
 					return;
 				}
-				aviso.textContent = 'Clique no livro certo:';
-				mostrar(dados.items);
+				aviso.textContent = 'Escolha a versão certa (a fonte aparece ao lado do autor):';
+				lista.style.maxHeight = '340px';
+				lista.style.overflowY = 'auto';
+				mostrar(todos);
 			})
 			.catch(function (erro) {
 				console.error('Falha na busca:', erro);
 				aviso.textContent = 'Falhou: ' + erro.message;
 			});
 	}
+		// Fonte 3: BrasilAPI (só ISBN). Converte para o mesmo formato do Google.
+		function buscarBrasilApi(isbn) {
+			return fetch('https://brasilapi.com.br/api/isbn/v1/' + isbn)
+				.then(function (resposta) {
+					if (resposta.status === 404) { return null; } // ISBN não cadastrado
+					if (!resposta.ok) { throw new Error('BrasilAPI: erro ' + resposta.status); }
+					return resposta.json();
+				})
+				.then(function (livro) {
+					if (!livro) { return []; }
+					return [{
+						volumeInfo: {
+							title: livro.title,
+							subtitle: livro.subtitle,
+							authors: livro.authors || [],
+							description: livro.synopsis || '',
+							imageLinks: livro.cover_url ? { thumbnail: livro.cover_url } : null
+						}
+					}];
+				});
+		}
 
 	botao.addEventListener('click', buscar);
 	campo.addEventListener('keydown', function (e) {
@@ -206,6 +371,7 @@ document.addEventListener('DOMContentLoaded', function () {
 			e.preventDefault(); // não deixa o Enter enviar o formulário
 			buscar();
 		}
+	
 	});
 });
 </script>
