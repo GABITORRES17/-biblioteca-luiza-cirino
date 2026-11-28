@@ -1,6 +1,7 @@
 package Job;
 
 import models.Cadastro;
+import models.Emprestimo;
 import models.Genero;
 import models.Livro;
 import models.Perfil;
@@ -9,13 +10,15 @@ import play.jobs.Job;
 import play.jobs.OnApplicationStart;
 import java.io.File;
 import java.io.FileInputStream;
+import java.util.Calendar;
+
 import play.Play;
 import play.db.jpa.Blob;
 import play.libs.MimeTypes;
 
 @OnApplicationStart
 public class Inicializador extends Job {
-	
+
 	@Override
 	public void doJob() throws Exception{
 		if (Genero.count() == 0){	
@@ -118,7 +121,6 @@ public class Inicializador extends Job {
                 bibliotecaria.save();
             }
             
-
          // ===== ROMANCE =====
             criarLivro("Aída", "Giuseppe Verdi e Antonio Ghislanzoni", 1, "Romance", "Aida.jpg", "No alto Egito, duas mulheres se apaixonam pelo mesmo homem .\n"
             		+ "\n"
@@ -489,8 +491,82 @@ public class Inicializador extends Job {
             criarLivro("Mudanças climáticas", "Gilvan Sampaio de Oliveira", 1, "Ciências", "Mudancas-climaticas-2.jpg", "");
             criarLivro("Antártica", "Maria Cordélia S. Machado", 1, "Ciências", "Antartica.jpg", "");
             criarLivro("Um olhar comprometido com o ensino de ciências", "Amélia Porto / Lízia Ramos e Sheila Goulart", 1, "Ciências", "Um-olhar-comprometido-com-o-ensino-de-ciencias.jpg", "");
+            // Cria os alunos e seus históricos depois que todos os livros foram cadastrados.
+            inicializarAlunosComHistorico();
 	}
-	
+
+    // Cria os alunos e registra os empréstimos antigos apenas uma vez.
+    private void inicializarAlunosComHistorico() throws Exception {
+        criarAlunoComHistorico("ANA CLARA", "2º Ano A", new String[] {
+            "A culpa é das estrelas", "A ladeira da saudade", "Naruto", "Astronomia", "Aída"
+        });
+        criarAlunoComHistorico("BEATRIZ", "3º Ano A", new String[] {
+            "Naruto", "Hunter x Hunter", "Doze reis e a moça no labirinto do vento", "A Grécia: mitos e lendas"
+        });
+        criarAlunoComHistorico("CAMILA", "1º Ano A", new String[] {
+            "A ladeira da saudade", "O garoto verde", "Contos e lendas do Peru"
+        });
+        criarAlunoComHistorico("DANIEL", "4º Ano A", new String[] {
+            "Astronomia", "Mudanças climáticas", "O calcanhar do Aquiles e outras histórias curiosas da Grécia Antiga"
+        });
+        criarAlunoComHistorico("EDUARDO", "5º Ano A", new String[] {
+            "A culpa é das estrelas", "Jane, a raposa e eu", "Manual do defensor do planeta", "Yuyu Hakusho"
+        });
+        criarAlunoComHistorico("FERNANDA", "2º Ano A", new String[] {
+            "Aída", "Eros e Psique", "O garoto verde", "Sakura", "Antártica"
+        });
+        criarAlunoComHistorico("GABRIEL", "6º Ano A", new String[] {
+            "Hunter x Hunter", "Naruto", "Delicious in Dungeon"
+        });
+        criarAlunoComHistorico("JULIA", "7º Ano A", new String[] {
+            "Doze reis e a moça no labirinto do vento", "A Grécia: mitos e lendas", "Astronomia", "Contos árabes para jovens de todos os lugares"
+        });
+        criarAlunoComHistorico("LUCAS", "8º Ano A", new String[] {
+            "Yuyu Hakusho", "A culpa é das estrelas"
+        });
+        criarAlunoComHistorico("MARIA EDUARDA", "9º Ano A", new String[] {
+            "O calcanhar do Aquiles e outras histórias curiosas da Grécia Antiga", "A ladeira da saudade", "Mudanças climáticas"
+        });
+    }
+    private void criarAlunoComHistorico(String nome, String nomeTurma, String[] titulos) throws Exception {
+        Cadastro aluno = Cadastro.find("nome = ?1", nome).first();
+
+        if (aluno == null) {
+            aluno = new Cadastro();
+            aluno.nome = nome;
+            aluno.senha = "1234";
+            aluno.perfil = Perfil.ALUNO;
+            aluno.turma = Turma.find("turma = ?1", nomeTurma).first();
+            aluno.save();
+        }
+
+        for (int i = 0; i < titulos.length; i++) {
+            Livro livro = Livro.find("titulo = ?1", titulos[i]).first();
+
+            if (livro == null) {
+                System.out.println("Livro não encontrado para o histórico: " + titulos[i]);
+                continue;
+            }
+
+            if (Emprestimo.count("aluno = ?1 and livro = ?2", aluno, livro) > 0) {
+                continue;
+            }
+
+            Calendar calendario = Calendar.getInstance();
+            calendario.add(Calendar.DAY_OF_MONTH, -(20 + i * 3));
+            java.util.Date dataEmprestimo = calendario.getTime();
+            calendario.add(Calendar.DAY_OF_MONTH, 7);
+            java.util.Date dataDevolucao = calendario.getTime();
+
+            Emprestimo emprestimo = new Emprestimo();
+            emprestimo.aluno = aluno;
+            emprestimo.livro = livro;
+            emprestimo.dataEmprestimo = dataEmprestimo;
+            emprestimo.dataDevolucao = dataDevolucao;
+            emprestimo.save();
+        }
+    }
+
 	// Só cria o livro se ainda não existir um com o mesmo título
 	private void criarLivro(String titulo, String autor, int quantidade, String nomeGenero, String arquivoCapa, String sinopse) throws Exception {
 		if (Livro.count("titulo = ?1", titulo) > 0) {
