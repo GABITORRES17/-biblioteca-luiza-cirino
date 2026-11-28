@@ -1,0 +1,203 @@
+#{extends 'main.html' /}
+#{set title:'Início' /}
+
+<style>
+progress { accent-color: #5d17eb; }
+.stat-icon { width: 52px; height: 52px; border-radius: 0.75rem; display: inline-flex; align-items: center; justify-content: center; font-size: 1.35rem; flex-shrink: 0; }
+.t-roxo   { background: rgba(93, 23, 235, 0.14);  color: #5d17eb; }
+.t-ciano  { background: rgba(92, 225, 230, 0.28); color: #0b6e73; }
+.t-laranja{ background: rgba(254, 145, 76, 0.25); color: #a84a08; }
+.t-coral  { background: rgba(255, 87, 87, 0.18);  color: #c92f2f; }
+[data-bs-theme="dark"] .t-roxo   { color: #b79cff; }
+[data-bs-theme="dark"] .t-ciano  { color: #8eeff2; }
+[data-bs-theme="dark"] .t-laranja{ color: #ffb784; }
+[data-bs-theme="dark"] .t-coral  { color: #ff9a9a; }
+.card.hero-bib { background: #5d17eb; color: #fff; border-color: transparent; }
+.stat-card:hover { border-color: #5d17eb; }
+</style>
+
+<!-- FAIXA DE BOAS-VINDAS -->
+<div class="card card-shadow hero-bib mb-4">
+	<div class="card-body d-flex align-items-center justify-content-between gap-3 p-4">
+		<div>
+			<div class="small opacity-75 mb-1"><i class="far fa-calendar me-1"></i> ${hoje.format('dd/MM/yyyy')}</div>
+			<h2 class="mb-1">Bem-vinda de volta!</h2>
+			<p class="mb-0 opacity-75">Aqui você acompanha a biblioteca num só lugar.</p>
+		</div>
+		<img src="@{'/public/images/logo-biblioteca.png'}" alt="Biblioteca Escolar da Luiza"
+			class="d-none d-sm-block"
+			style="width: 96px; height: 96px; border-radius: 50%; background: #fbe5f2; border: 3px solid #fff; object-fit: cover;" />
+	</div>
+</div>
+
+<!-- NÚMEROS -->
+<div class="row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-3 mb-4">
+	<div class="col">
+		<a href="@{Livros.listar()}" class="text-decoration-none text-body">
+			<div class="card card-shadow stat-card h-100">
+				<div class="card-body d-flex align-items-center gap-3">
+					<span class="stat-icon t-roxo"><i class="fas fa-book"></i></span>
+					<div>
+						<div class="fs-3 fw-bold lh-1">${totalLivros}</div>
+						<div class="small text-body-secondary">Livros cadastrados</div>
+					</div>
+				</div>
+			</div>
+		</a>
+	</div>
+	<div class="col">
+		<a href="@{Cadastros.listar()}" class="text-decoration-none text-body">
+			<div class="card card-shadow stat-card h-100">
+				<div class="card-body d-flex align-items-center gap-3">
+					<span class="stat-icon t-ciano"><i class="fas fa-users"></i></span>
+					<div>
+						<div class="fs-3 fw-bold lh-1">${totalAlunos}</div>
+						<div class="small text-body-secondary">Alunos cadastrados</div>
+					</div>
+				</div>
+			</div>
+		</a>
+	</div>
+	<div class="col">
+		<a href="@{Emprestimos.listar()}" class="text-decoration-none text-body">
+			<div class="card card-shadow stat-card h-100">
+				<div class="card-body d-flex align-items-center gap-3">
+					<span class="stat-icon t-laranja"><i class="fas fa-hand-holding"></i></span>
+					<div>
+						<div class="fs-3 fw-bold lh-1">${emAberto}</div>
+						<div class="small text-body-secondary">Empréstimos em aberto</div>
+					</div>
+				</div>
+			</div>
+		</a>
+	</div>
+	<div class="col">
+		<a href="@{Reservas.listar()}" class="text-decoration-none text-body">
+			<div class="card card-shadow stat-card h-100">
+				<div class="card-body d-flex align-items-center gap-3">
+					<span class="stat-icon t-coral"><i class="fas fa-bookmark"></i></span>
+					<div>
+						<div class="fs-3 fw-bold lh-1">${reservasPendentes}</div>
+						<div class="small text-body-secondary">Reservas pendentes</div>
+					</div>
+				</div>
+			</div>
+		</a>
+	</div>
+</div>
+
+<div class="row g-3 mb-4">
+
+	<!-- EMPRÉSTIMOS RECENTES -->
+	<div class="col-lg-7">
+		<div class="card card-shadow h-100">
+			<div class="card-body">
+				<div class="d-flex justify-content-between align-items-center mb-3">
+					<h5 class="mb-0"><i class="fas fa-clock-rotate-left me-2 text-primary"></i>Empréstimos recentes</h5>
+					<a href="@{Emprestimos.listar()}" class="small">Ver todos <i class="fas fa-arrow-right"></i></a>
+				</div>
+				#{if recentes}
+				<div class="table-responsive">
+					<table class="table align-middle mb-0">
+						<thead>
+							<tr>
+								<th>Aluno</th>
+								<th>Livro</th>
+								<th>Pegou em</th>
+								<th></th>
+							</tr>
+						</thead>
+						<tbody>
+							#{list items:recentes, as:'e'}
+							<tr>
+								<td>${e.aluno.nome}</td>
+								<td>${e.livro.titulo}</td>
+								<td class="text-nowrap">${e.dataEmprestimo.format('dd/MM/yyyy')}</td>
+								<td>
+									#{if e.dataDevolucao}
+									<span class="badge bg-success-subtle text-success-emphasis">Devolvido</span>
+									#{/if}
+									#{else}
+									<span class="badge bg-warning-subtle text-warning-emphasis">Em aberto</span>
+									#{/else}
+								</td>
+							</tr>
+							#{/list}
+						</tbody>
+					</table>
+				</div>
+				#{/if}
+				#{else}
+				<p class="text-body-secondary mb-0">Nenhum empréstimo registrado ainda.</p>
+				#{/else}
+			</div>
+		</div>
+	</div>
+
+	<div class="col-lg-5">
+
+		<!-- AÇÕES RÁPIDAS -->
+		<div class="card card-shadow mb-3">
+			<div class="card-body">
+				<h5 class="mb-3"><i class="fas fa-bolt me-2 text-primary"></i>Ações rápidas</h5>
+				<div class="row g-2">
+					<div class="col-6">
+						<a href="@{Emprestimos.form()}" class="btn btn-primary w-100"><i class="fas fa-plus me-1"></i> Empréstimo</a>
+					</div>
+					<div class="col-6">
+						<a href="@{Livros.form()}" class="btn btn-success w-100"><i class="fas fa-book me-1"></i> Novo livro</a>
+					</div>
+					<div class="col-6">
+						<a href="@{Cadastros.formCadastro()}" class="btn btn-outline-primary w-100"><i class="fas fa-user-plus me-1"></i> Novo aluno</a>
+					</div>
+					<div class="col-6">
+						<a href="@{Podio.listar()}" class="btn btn-outline-warning w-100"><i class="fas fa-trophy me-1"></i> Pódio</a>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- RESERVAS PENDENTES -->
+		<div class="card card-shadow">
+			<div class="card-body">
+				<div class="d-flex justify-content-between align-items-center mb-2">
+					<h5 class="mb-0"><i class="fas fa-bell me-2 text-primary"></i>Reservas pendentes</h5>
+					<a href="@{Reservas.listar()}" class="small">Ver todas <i class="fas fa-arrow-right"></i></a>
+				</div>
+				#{if reservas}
+				<ul class="list-group list-group-flush">
+					#{list items:reservas, as:'r'}
+					<li class="list-group-item px-0">
+						<div class="fw-semibold">${r.livro.titulo}</div>
+						<div class="small text-body-secondary">${r.aluno.nome} &bull; ${r.dataRes.format('dd/MM HH:mm')}</div>
+					</li>
+					#{/list}
+				</ul>
+				#{/if}
+				#{else}
+				<p class="text-body-secondary mb-0">Nenhuma reserva pendente.</p>
+				#{/else}
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- ACERVO POR GÊNERO -->
+<div class="card card-shadow mb-4">
+	<div class="card-body">
+		<h5 class="mb-3"><i class="fas fa-chart-bar me-2 text-primary"></i>Acervo por gênero</h5>
+		<div class="row row-cols-1 row-cols-md-2 g-3">
+			#{list items:acervo, as:'item'}
+			<div class="col">
+				<div class="d-flex justify-content-between small mb-1">
+					<span>${item[0]}</span>
+					<span class="fw-semibold">${item[1]}</span>
+				</div>
+				<div class="progress" style="height: 8px;">
+					<progress class="w-100" style="height: 8px;" value="${item[2]}" max="100"></progress>
+				</div>
+			</div>
+			#{/list}
+		</div>
+	</div>
+</div>

@@ -30,105 +30,42 @@
 </script>
 
 <style>
-/* Paleta da marca: azul claro + cores de apoio. Troque aqui para mudar o visual todo. */
 :root {
-	/* Paleta da Biblioteca Escolar da Luiza */
-	--bib-azul: #5d17eb;        /* roxo (cor principal) */
-	--bib-azul-claro: #5ce1e6;  /* ciano */
-	--bib-verde: #5ce1e6;       /* ciano */
+	--bib-azul: #5d17eb;
 	--bib-amarelo: #ffd900;
-	--bib-rosa: #ff5757;        /* coral */
-	--bib-roxo: #5d17eb;
-	--bib-laranja: #fe914c;
 	--bs-primary: #5d17eb;
 	--bs-primary-rgb: 93, 23, 235;
 	--bs-link-color: #5d17eb;
 }
 
-/* Modo claro: em vez de branco puro, um azul bem clarinho (cartões, campos, rodapé) */
-[data-bs-theme="light"] {
-	--bs-body-bg: #e3f1fd;
-	--bs-body-bg-rgb: 227, 241, 253;
-	--bs-tertiary-bg: #d3e8fa;
-	--bs-tertiary-bg-rgb: 211, 232, 250;
-}
-
-/* Fundo suave colorido (claro e escuro) */
-body.bg-bib {
-	background: #a5d0f2; /* azul do fundo, mais claro que o Pantone 291 C */
-	transition: background-color 0.3s ease, color 0.3s ease;
-}
-
-[data-bs-theme="dark"] body.bg-bib {
-	background: linear-gradient(160deg, #0d1b33 0%, #121c2f 55%, #1d1730 100%) fixed;
-}
+body.bg-bib { transition: background-color 0.3s ease, color 0.3s ease; }
 
 /* ---------- Navbar ---------- */
 .navbar-bib {
-	position: sticky;
-	background: #5d17eb;
 	padding-top: 0.6rem;
 	padding-bottom: 0.6rem;
 	transition: padding 0.25s ease, box-shadow 0.25s ease;
 }
-
-/* Quando a página rola, a navbar fica mais compacta */
-.navbar-bib.rolou {
-	padding-top: 0.25rem;
-	padding-bottom: 0.25rem;
-	box-shadow: 0 6px 18px rgba(93, 23, 235, 0.35) !important;
-}
-
-.navbar-bib .navbar-brand {
-	letter-spacing: 0.3px;
-}
-
-.navbar-bib.rolou .navbar-brand .logo-bib {
-	height: 48px;
-	width: 48px;
-}
+.navbar-bib.rolou { padding-top: 0.25rem; padding-bottom: 0.25rem; }
 
 .navbar-bib .navbar-brand .logo-bib {
 	height: 64px;
 	width: 64px;
 	border-radius: 50%;
-	background: #fbe5f2;
 	object-fit: cover;
 	transition: height 0.25s ease, width 0.25s ease;
 }
+.navbar-bib.rolou .navbar-brand .logo-bib { height: 48px; width: 48px; }
 
 .navbar-bib .nav-link {
 	border-radius: 0.6rem;
 	padding: 0.45rem 0.85rem;
-	transition: background-color 0.2s ease, transform 0.2s ease;
+	transition: background-color 0.2s ease;
 }
+.navbar-bib .nav-link:hover, .navbar-bib .nav-link:focus,
+.navbar-bib .nav-link.active { color: #fff; }
+.navbar-bib .nav-link.active { font-weight: 600; }
 
-.navbar-bib .nav-link:hover, .navbar-bib .nav-link:focus {
-	background-color: rgba(255, 255, 255, 0.18);
-	color: #fff;
-	transform: translateY(-2px);
-}
-
-.navbar-bib .nav-link.active {
-	background-color: rgba(255, 255, 255, 0.28);
-	color: #fff;
-	font-weight: 600;
-}
-
-/* Cada item do menu tem um ícone de cor diferente */
-.ic-livros { color: #5ce1e6; }
-.ic-novo { color: #fe914c; }
-.ic-alunos { color: #ffd900; }
-
-.navbar-bib .nav-link i {
-	transition: transform 0.2s ease;
-}
-
-.navbar-bib .nav-link:hover i {
-	transform: scale(1.25);
-}
-
-/* Botão de tema redondo */
 .theme-toggle {
 	width: 38px;
 	height: 38px;
@@ -139,22 +76,14 @@ body.bg-bib {
 	cursor: pointer;
 	border: 1px solid rgba(255, 255, 255, 0.5);
 	background: rgba(255, 255, 255, 0.12);
-	color: var(--bib-amarelo);
-	transition: background-color 0.2s ease, transform 0.35s ease;
+	transition: background-color 0.2s ease;
 }
+.theme-toggle:hover { background-color: rgba(255, 255, 255, 0.28); }
 
-.theme-toggle:hover {
-	background-color: rgba(255, 255, 255, 0.28);
-	transform: rotate(180deg);
-}
-
-/* Avatar com a inicial do usuário */
 .avatar-inicial {
 	width: 30px;
 	height: 30px;
 	border-radius: 50%;
-	background: linear-gradient(135deg, var(--bib-amarelo), #ff922b);
-	color: #3b2a00;
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
@@ -163,168 +92,27 @@ body.bg-bib {
 	text-transform: uppercase;
 }
 
-/* ---------- Conteúdo ---------- */
-.card-shadow {
-	border: 0;
-	border-radius: 1rem;
-	box-shadow: 0 2px 10px rgba(93, 23, 235, 0.12);
-	transition: background-color 0.3s ease, box-shadow 0.25s ease, transform 0.25s ease;
-}
-
-.page-title {
-	display: flex;
-	align-items: center;
-	gap: 0.85rem;
-}
-
-/* Ícone do título: simples, cor sólida */
+/* ---------- Título da página ---------- */
+.page-title { display: flex; align-items: center; gap: 0.85rem; }
 .page-title .icone {
 	width: 50px;
 	height: 50px;
-	border-radius: 1rem;
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
-	background: var(--bib-azul);
 	color: #fff;
 	font-size: 1.3rem;
 }
+.page-title .icone-menu { cursor: pointer; }
 
-/* Ícone do título quando é botão: cursor e efeito ao passar o mouse */
-.page-title .icone-menu {
-	cursor: pointer;
-	transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
+/* ---------- Botões ---------- */
+.btn { transition: background-color 0.18s ease; }
+.btn-primary, .btn-success { border: 0; }
 
-.page-title .icone-menu:hover {
-	transform: scale(1.08);
-	box-shadow: 0 4px 12px rgba(93, 23, 235, 0.4);
-}
+/* ---------- Modo escuro (selos de disponível/indisponível) ---------- */
+[data-bs-theme="dark"] .badge-available { background-color: #1e3a2a; color: #8fde9f; }
+[data-bs-theme="dark"] .badge-unavailable { background-color: #3a1e1e; color: #f5a3a3; }
 
-/* Menu lateral de gêneros: mesma cor do fundo da página */
-.offcanvas {
-	background: #a5d0f2; /* igual ao body.bg-bib no modo claro */
-}
-
-[data-bs-theme="dark"] .offcanvas {
-	background: linear-gradient(160deg, #0d1b33 0%, #121c2f 55%, #1d1730 100%) fixed; /* igual ao fundo escuro */
-}
-
-/* Itens da lista transparentes, para o fundo aparecer por trás */
-.offcanvas .list-group {
-	--bs-list-group-bg: transparent;
-	--bs-list-group-border-color: rgba(0, 0, 0, 0.12);
-	--bs-list-group-action-hover-bg: rgba(255, 255, 255, 0.35);
-}
-
-[data-bs-theme="dark"] .offcanvas .list-group {
-	--bs-list-group-border-color: rgba(255, 255, 255, 0.12);
-	--bs-list-group-action-hover-bg: rgba(255, 255, 255, 0.08);
-}
-
-.page-title h1 {
-	font-weight: 700;
-	background: linear-gradient(90deg, #5d17eb, #ff5757);
-	-webkit-background-clip: text;
-	background-clip: text;
-	-webkit-text-fill-color: transparent;
-}
-
-[data-bs-theme="dark"] .page-title h1 {
-	background: linear-gradient(90deg, #5ce1e6, #c4b1ff);
-	-webkit-background-clip: text;
-	background-clip: text;
-}
-
-[data-bs-theme="dark"] .book-card {
-	background: #2b3035;
-	border-left-color: #5d17eb;
-}
-
-[data-bs-theme="dark"] .badge-available {
-	background-color: #1e3a2a;
-	color: #8fde9f;
-}
-
-[data-bs-theme="dark"] .badge-unavailable {
-	background-color: #3a1e1e;
-	color: #f5a3a3;
-}
-
-/* Botões mais vivos e com movimento */
-.btn {
-	transition: transform 0.18s ease, box-shadow 0.18s ease, background-color 0.18s ease;
-}
-
-.btn:hover {
-	transform: translateY(-2px);
-	box-shadow: 0 6px 14px rgba(0, 0, 0, 0.18);
-}
-
-.btn:active {
-	transform: translateY(0);
-}
-
-.btn-primary, .btn-success {
-	border: 0;
-}
-
-.btn-primary {
-	background: #5d17eb;
-	color: #fff;
-}
-
-.btn-success {
-	background: #5ce1e6;
-	color: #0b1b33;
-}
-
-/* Campos de formulário */
-.form-control:focus, .form-select:focus {
-	border-color: #5d17eb;
-	box-shadow: 0 0 0 0.25rem rgba(93, 23, 235, 0.25);
-}
-
-/* Avisos com faixa colorida na lateral */
-.alert {
-	border-left: 5px solid;
-	border-radius: 0.75rem;
-}
-
-.alert-success { border-left-color: var(--bib-verde); }
-.alert-danger { border-left-color: var(--bib-rosa); }
-
-/* ---------- Animações ---------- */
-@keyframes subir {
-	from { opacity: 0; transform: translateY(18px); }
-	to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes flutuar {
-	0% { transform: translateY(0); }
-	50% { transform: translateY(-4px); }
-	100% { transform: translateY(0); }
-}
-
-/* Tudo que aparece no conteúdo entra subindo, um depois do outro */
-main > * {
-	animation: subir 0.5s ease both;
-}
-
-main > *:nth-child(2) { animation-delay: 0.06s; }
-main > *:nth-child(3) { animation-delay: 0.12s; }
-main > *:nth-child(4) { animation-delay: 0.18s; }
-main > *:nth-child(5) { animation-delay: 0.24s; }
-main > *:nth-child(6) { animation-delay: 0.3s; }
-main > *:nth-child(n+7) { animation-delay: 0.36s; }
-
-/* Quem prefere menos movimento no sistema não vê as animações */
-@media (prefers-reduced-motion: reduce) {
-	*, *::before, *::after {
-		animation: none !important;
-		transition: none !important;
-	}
-}
 
 </style>
 
@@ -700,15 +488,61 @@ img.book-cover {
 }
 
 /* ---------- Menu lateral de gêneros ---------- */
-.offcanvas,
-[data-bs-theme="dark"] .offcanvas {
-	background: var(--bs-body-bg);
+.offcanvas-start {
+  border-right: 0;
+  border-radius: 0 1.2rem 1.2rem 0;
+  box-shadow: 0 0 40px rgba(93, 23, 235, 0.25);
+}
+.offcanvas .offcanvas-header {
+  padding: 1.2rem 1.3rem;
+  border-bottom: 1px solid var(--bs-border-color);
+}
+.offcanvas .offcanvas-title {
+  font-family: 'Fredoka', sans-serif;
+  font-weight: 600;
+}
+.offcanvas .offcanvas-title i { color: #ff5757; }
+.offcanvas .offcanvas-body { padding: 0.8rem; }
+
+.offcanvas .list-group { gap: 0.3rem; }
+.offcanvas .list-group-item {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  border: 0 !important;
+  border-radius: 0.8rem !important;
+  padding: 0.7rem 0.95rem;
+  background: transparent;
+  transition: background 0.15s, padding-left 0.15s;
+}
+.offcanvas .list-group-item:hover {
+  background: rgba(93, 23, 235, 0.12);
+  padding-left: 1.2rem;
 }
 
-.offcanvas .list-group {
-	--bs-list-group-action-hover-bg: var(--bib-rosa);
-	--bs-list-group-border-color: rgba(93, 23, 235, 0.12);
+/* bolinha colorida antes de cada gênero (o item "Todos" tem ícone e fica sem bolinha) */
+.offcanvas .list-group-item::before {
+  content: "";
+  width: 0.6rem;
+  height: 0.6rem;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background: #5d17eb;
 }
+.offcanvas .list-group-item:has(i)::before { display: none; }
+.offcanvas .list-group-item:nth-child(4n+2)::before { background: #5ce1e6; }
+.offcanvas .list-group-item:nth-child(4n+3)::before { background: #fe914c; }
+.offcanvas .list-group-item:nth-child(4n+4)::before { background: #ff5757; }
+
+/* gênero selecionado */
+.offcanvas .list-group-item.active {
+  background: #5d17eb;
+  color: #fff;
+  font-weight: 600;
+  padding-left: 0.95rem;
+  box-shadow: 0 4px 14px rgba(93, 23, 235, 0.35);
+}
+
 
 [data-bs-theme="dark"] .offcanvas .list-group {
 	--bs-list-group-action-hover-bg: #2a1c47;
@@ -738,7 +572,6 @@ main > * {
 }
 </style>
 </head>
-</head>
 
 <!-- Coluna ocupando a altura toda: o rodapé fica sempre embaixo da tela -->
 <body class="bg-bib d-flex flex-column min-vh-100">
@@ -750,7 +583,7 @@ main > * {
 
 			<!-- Marca: leva para a lista de livros (logado) ou para o login -->
 			<a class="navbar-brand d-flex align-items-center gap-2 fw-bold"
-				#{if session.usuarioLogado}href="@{Livros.listar()}"#{/if}
+				#{if session.usuarioLogado}href="@{Application.index()}"#{/if}
 				#{else}href="@{Logins.form()}"#{/else}>
 				<img src="@{'/public/images/logo-biblioteca.png'}" alt="Biblioteca Escolar da Luiza" class="logo-bib">
 			</a>
@@ -767,6 +600,9 @@ main > * {
 
 				<!-- Menu da esquerda: só aparece para quem está logado -->
 				<ul class="navbar-nav me-auto mb-2 mb-lg-0 gap-lg-1">
+									<li class="nav-item"><a
+						class="nav-link ${request.controller == 'Application' ? 'active' : ''}"
+						href="@{Application.index()}"><i class="fas fa-house me-1 ic-livros"></i> Início</a></li>
 					#{if session.usuarioLogado}
 					<li class="nav-item"><a
 						class="nav-link ${request.controller == 'Livros' && request.action != 'Livros.form' ? 'active' : ''}"
@@ -846,7 +682,6 @@ main > * {
 			</div>
 		</div>
 	</nav>
-	</nav>
 
 	<!-- ================= MENU LATERAL DE GÊNEROS ================= -->
 	#{if request.controller == 'Livros'}
@@ -875,9 +710,6 @@ main > * {
 		</div>
 	</div>
 	#{/if}
-
-	<!-- ================= CONTEÚDO ================= -->
-
 	<!-- ================= CONTEÚDO ================= -->
 	<main class="container flex-grow-1 py-4" style="max-width: 1000px;">
 

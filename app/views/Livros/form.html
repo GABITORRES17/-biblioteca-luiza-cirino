@@ -14,6 +14,23 @@
 </h4>
 #{/else}
 
+<!-- Busca automática: preenche título, autor e sinopse -->
+<div class="card card-shadow mb-4">
+	<div class="card-body">
+		<h6 class="mb-1"><i class="fas fa-wand-magic-sparkles me-2 text-primary"></i>Preencher automaticamente</h6>
+		<p class="small text-body-secondary mb-2">Digite o título ou o ISBN do livro e escolha um resultado.</p>
+		<div class="input-group">
+			<input type="text" id="buscaLivro" class="form-control"
+				placeholder="Ex.: Dom Casmurro ou 9788535902778" autocomplete="off" />
+			<button type="button" id="btnBuscaLivro" class="btn btn-primary">
+				<i class="fas fa-search me-1"></i> Buscar
+			</button>
+		</div>
+		<div id="buscaLivroAviso" class="form-text"></div>
+		<div id="buscaLivroLista" class="list-group mt-2"></div>
+	</div>
+</div>
+
 <form action="/livros/salvar" method="post" enctype="multipart/form-data" class="card card-shadow p-4">
 
 	<input type="hidden" name="livro.id" value="${l.id}" />
@@ -26,29 +43,31 @@
 	</div>
 
 	<div class="mb-3">
-	<label class="form-label">Autor(a)</label>
-	<input type="text" name="livro.autor" value="${l.autor}"
-		class="form-control #{ifError 'livro.autor'}is-invalid#{/ifError}" />
-	<div class="invalid-feedback">#{error 'livro.autor' /}</div>
-</div>
-
-   <div class="mb-3">
-	<label class="form-label">Sinopse</label>
-	<textarea name="livro.sinopse" rows="5"
-		class="form-control #{ifError 'livro.sinopse'}is-invalid#{/ifError}">${l.sinopse}</textarea>
-	<div class="invalid-feedback">#{error 'livro.sinopse' /}</div>
-</div>
+		<label class="form-label">Autor(a)</label>
+		<input type="text" name="livro.autor" value="${l.autor}"
+			class="form-control #{ifError 'livro.autor'}is-invalid#{/ifError}" />
+		<div class="invalid-feedback">#{error 'livro.autor' /}</div>
+	</div>
 
 	<div class="mb-3">
-	<label class="form-label">Cópias</label>
-	<input type="text" name="livro.quantidade" value="${l.quantidade}"
-		class="form-control #{ifError 'livro.quantidade'}is-invalid#{/ifError}" />
-	<div class="invalid-feedback">#{error 'livro.quantidade' /}</div>
-</div>
-<div class="mb-3">
-	<label class="form-label">Capa</label>
-	<input type="file" name="livro.capa" accept="image/*" class="form-control" />
-</div>
+		<label class="form-label">Sinopse</label>
+		<textarea name="livro.sinopse" rows="5"
+			class="form-control #{ifError 'livro.sinopse'}is-invalid#{/ifError}">${l.sinopse}</textarea>
+		<div class="invalid-feedback">#{error 'livro.sinopse' /}</div>
+	</div>
+
+	<div class="mb-3">
+		<label class="form-label">Cópias</label>
+		<input type="text" name="livro.quantidade" value="${l.quantidade}"
+			class="form-control #{ifError 'livro.quantidade'}is-invalid#{/ifError}" />
+		<div class="invalid-feedback">#{error 'livro.quantidade' /}</div>
+	</div>
+
+	<div class="mb-3">
+		<label class="form-label">Capa</label>
+		<input type="file" name="livro.capa" accept="image/*" class="form-control" />
+	</div>
+
 	<div class="mb-4">
 		<label class="form-label">Gênero</label> <select
 			name="livro.genero.id" class="form-select"> #{list
@@ -72,3 +91,121 @@
 		class="fas fa-arrow-left me-1"></i> Retornar
 	</a>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+	var campo = document.getElementById('buscaLivro');
+	var botao = document.getElementById('btnBuscaLivro');
+	var aviso = document.getElementById('buscaLivroAviso');
+	var lista = document.getElementById('buscaLivroLista');
+
+	// Acha o campo do formulário pelo final do name (livro.titulo, livro.autor...)
+	function pegar(nome) {
+		return document.querySelector('[name$="' + nome + '"]');
+	}
+
+	// Tira as tags HTML que às vezes vêm na descrição
+	function limparHtml(texto) {
+		var t = (texto || '').replace(/<br\s*\/?>|<\/p>/gi, '\n');
+		var doc = new DOMParser().parseFromString(t, 'text/html');
+		return (doc.body.textContent || '').trim();
+	}
+
+	// Copia os dados do livro escolhido para os campos do formulário
+	function preencher(info) {
+		var titulo = info.title || '';
+		if (info.subtitle) { titulo += ': ' + info.subtitle; }
+		var autor = (info.authors || []).join(', ');
+		var sinopse = limparHtml(info.description).slice(0, 2000);
+
+		if (pegar('titulo')) { pegar('titulo').value = titulo; }
+		if (pegar('autor')) { pegar('autor').value = autor; }
+		if (pegar('sinopse')) { pegar('sinopse').value = sinopse; }
+
+		lista.innerHTML = '';
+		if (sinopse.length === 0) {
+			aviso.textContent = 'Esse livro não tem sinopse na base. Escreva uma (mínimo 50 caracteres).';
+		} else if (sinopse.length < 50) {
+			aviso.textContent = 'A sinopse veio curta. Complete até 50 caracteres.';
+		} else {
+			aviso.textContent = 'Campos preenchidos. Confira, escolha o gênero e a capa.';
+		}
+	}
+
+	// Mostra os resultados numa lista clicável
+	function mostrar(itens) {
+		lista.innerHTML = '';
+		itens.forEach(function (item) {
+			var info = item.volumeInfo || {};
+			var botaoItem = document.createElement('button');
+			botaoItem.type = 'button';
+			botaoItem.className = 'list-group-item list-group-item-action d-flex align-items-center gap-3';
+
+			if (info.imageLinks && info.imageLinks.thumbnail) {
+				var img = document.createElement('img');
+				img.src = info.imageLinks.thumbnail.replace('http://', 'https://');
+				img.alt = '';
+				img.style.width = '40px';
+				botaoItem.appendChild(img);
+			}
+
+			var texto = document.createElement('div');
+			var nome = document.createElement('div');
+			nome.className = 'fw-semibold';
+			nome.textContent = info.title || '(sem título)';
+			var por = document.createElement('div');
+			por.className = 'small text-body-secondary';
+			por.textContent = (info.authors || []).join(', ');
+			texto.appendChild(nome);
+			texto.appendChild(por);
+			botaoItem.appendChild(texto);
+
+			botaoItem.addEventListener('click', function () { preencher(info); });
+			lista.appendChild(botaoItem);
+		});
+	}
+
+	// Pergunta ao Google Livros, em segundo plano (AJAX)
+	function buscar() {
+		var texto = campo.value.trim();
+		if (texto === '') { return; }
+
+		// Se for só número com 10 ou 13 dígitos, é um ISBN
+		var numeros = texto.replace(/[-\s]/g, '');
+		var consulta = /^\d{10}(\d{3})?$/.test(numeros) ? 'isbn:' + numeros : texto;
+		var endereco = 'https://www.googleapis.com/books/v1/volumes?q=' + encodeURIComponent(consulta) + '&maxResults=5&printType=books';
+
+		aviso.textContent = 'Buscando...';
+		lista.innerHTML = '';
+
+		fetch(endereco)
+			.then(function (resposta) {
+				if (!resposta.ok) {
+					throw new Error('O Google respondeu com erro ' + resposta.status);
+				}
+				return resposta.json();
+			})
+			.then(function (dados) {
+				console.log('Resposta do Google Livros:', dados);
+				if (!dados.items || dados.items.length === 0) {
+					aviso.textContent = 'Nenhum livro encontrado para "' + texto + '". Tente só o título ou outro termo.';
+					return;
+				}
+				aviso.textContent = 'Clique no livro certo:';
+				mostrar(dados.items);
+			})
+			.catch(function (erro) {
+				console.error('Falha na busca:', erro);
+				aviso.textContent = 'Falhou: ' + erro.message;
+			});
+	}
+
+	botao.addEventListener('click', buscar);
+	campo.addEventListener('keydown', function (e) {
+		if (e.key === 'Enter') {
+			e.preventDefault(); // não deixa o Enter enviar o formulário
+			buscar();
+		}
+	});
+});
+</script>

@@ -19,7 +19,7 @@ public class Logins extends Controller{
 		session.put("usuarioLogado", login);
 		session.put("perfilUsuario", cadastroBanco.perfil.name());
 		flash.success("Login realizado com sucesso!!");
-		Livros.listar(null);
+		Application.index();
 		
 	}
 	
